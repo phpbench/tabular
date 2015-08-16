@@ -1,0 +1,36 @@
+{
+    "name": "phpbench/tabular",
+    "description": "PHP Bench Reporting Framework",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniel Leech",
+            "email": "daniel@dantleech.com"
+        }
+    ],
+    "require": {
+        "php": "~5.4",
+        "symfony/console": "~2.4",
+        "seld/jsonlint": "~1.0",
+        "justinrainbow/json-schema": "~1.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpBench\\Tabular\\": "lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpBench\\Tabular\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "bin": ["bin/phpbench"]
+}
+

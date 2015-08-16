@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<phpbench version="0.5">
+  <benchmark class="\CostOfReflectionBench">
+    <subject name="benchMethodSet">
+      <group name="cost_of_setting"/>
+      <variant>
+        <iteration revs="10000" time="10" memory="100"/>
+        <iteration revs="10000" time="10" memory="100"/>
+        <iteration revs="10000" time="10" memory="100"/>
+        <iteration revs="10000" time="10" memory="100"/>
+      </variant>
+    </subject>
+    <subject name="benchPublicProperty">
+      <group name="cost_of_setting"/>
+      <variant>
+        <iteration revs="10000" time="10" memory="100"/>
+        <iteration revs="10000" time="10" memory="100"/>
+        <iteration revs="10000" time="10" memory="100"/>
+        <iteration revs="10000" time="10" memory="100"/>
+      </variant>
+    </subject>
+  </benchmark>
+</phpbench>
