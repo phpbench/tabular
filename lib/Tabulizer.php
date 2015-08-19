@@ -4,17 +4,33 @@ namespace PhpBench\Tabular;
 
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
+use PhpBench\Tabular\Sort;
+use JsonSchema\Validator;
 
 class Tabulizer
 {
+    const DEFAULT_GROUP = '_default';
+
+    private $validator;
+
+    public function __construct(Validator $validator = null)
+    {
+        $this->validator = $validator ? : new Validator();
+    }
+
     public function tabularize(\DOMDocument $sourceDom, array $definition)
     {
+        $this->validateDefinition($definition);
+
         $tableDom = new Document();
         $tableEl = $tableDom->createRoot('table');
         $sourceXpath = new \DOMXpath($sourceDom);
 
         $this->iterateRowDefinitions($tableEl, $sourceXpath, $definition['rows']);
-        $this->sortTable($tableDom, $definition['sort']);
+
+        if (isset($definition['sort'])) {
+            Sort::sortTable($tableDom, $definition['sort']);
+        }
 
         return $tableDom;
     }
@@ -39,11 +55,22 @@ class Tabulizer
 
             foreach ($rowItems as $rowItem) {
                 foreach ($sourceXpath->query($selector) as $sourceEl) {
-                    $rowEl = $tableEl->appendElement('row');
-
                     if (isset($rowDefinition['group'])) {
-                        $rowEl->setAttribute('group', $rowDefinition['group']);
+                        $group = $rowDefinition['group'];
+                    } else {
+                        $group = self::DEFAULT_GROUP;
                     }
+
+                    $groupEls = $tableEl->ownerDocument->xpath()->query('//group[@name="' . $group .'"]');
+
+                    if ($groupEls->length > 0) {
+                        $groupEl = $groupEls->item(0);
+                    } else {
+                        $groupEl = $tableEl->appendElement('group');
+                        $groupEl->setAttribute('name', $group);
+                    }
+
+                    $rowEl = $groupEl->appendElement('row');
 
                     foreach ($tableInfo->columns as $columnName => $column) {
 
@@ -125,8 +152,20 @@ class Tabulizer
         return preg_replace('/{{\s*?' . $context . '\.item\s*}}/', $value, $subject);
     }
 
-    private function sortTable(Document $tableDom, $sortDefinition)
+    private function validateDefinition(array $definition)
     {
-        $array = iterator_to_array($tableDom->xpath()->query('//row'));
+        $definition = json_decode(json_encode($definition));
+        $this->validator->check($definition, json_decode(file_get_contents(__DIR__ . '/schema/table.json')));
+
+        if (!$this->validator->isValid()) {
+            $errorString = array();
+            foreach ($this->validator->getErrors() as $error) {
+                $errorString[] = sprintf('[%s] %s', $error['property'], $error['message']);
+            }
+            throw new \InvalidArgumentException(sprintf(
+                'Invalid table definition: %s%s',
+                PHP_EOL . PHP_EOL, implode(PHP_EOL, $errorString)
+            ));
+        }
     }
 }

@@ -1,0 +1,59 @@
+{
+    "type": "object",
+    "description": "Table definition",
+    "additionalProperties": false,
+    "properties": {
+        "rows": {
+            "oneOf": [
+                { "type": "object" },
+                { "type": "array" }
+            ],
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "group": {
+                        "type": "string"
+                    },
+                    "cells": {
+                        "type": "object",
+                        "description": "Cell definitions for row",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "expr": {
+                                    "type": "string",
+                                    "description": "XPath expression to evaluate for cell value"
+                                },
+                                "literal": {
+                                    "type": "string",
+                                    "description": "Literal value"
+                                },
+                                "with_items": {
+                                    "type": "array",
+                                    "description": "Iterate the cell definition with the given values"
+                                }
+                            }
+                        }
+                    },
+                    "with_items": {
+                        "type": "array",
+                        "description": "Iterate the row definition with these values"
+                    },
+                    "with_query": {
+                        "type": "string",
+                        "description": "Iterate the row definitions for each result from this query"
+                    }
+                }
+            }
+        },
+        "sort": {
+            "oneOf": [
+                { "type": "object" },
+                { "type": "array" }
+            ],
+            "description": "Sort the table"
+        }
+    }
+}

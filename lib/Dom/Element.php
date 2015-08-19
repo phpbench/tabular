@@ -8,4 +8,9 @@ class Element extends \DOMElement
     {
         return $this->appendChild(new Element($name));
     }
+
+    public function query($xpath)
+    {
+        return $this->ownerDocument->xpath()->query($xpath, $this);
+    }
 }

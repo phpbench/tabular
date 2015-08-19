@@ -21,7 +21,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->tabulizer->tabularize($this->document, array(
             'rows' => array(
-                'one' => array(
+                array(
                     'cells' => array(
                         'time' => array(
                             'expr' => 'sum(//iteration/@time)',
@@ -40,6 +40,23 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
                 'memory' => 800,
             ),
         ), $result);
+    }
+
+    /**
+     * It should throw an exception if the definition is invalid
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage [rows[0]] The property - cinvalidls - is not defined and the definition does not allow additional properties
+     */
+    public function testInvalidDefinition()
+    {
+        $this->tabulizer->tabularize($this->document, array(
+            'rows' => array(
+                array(
+                    'cinvalidls' => array(
+                ),
+            ),
+        )));
     }
 
     /**
@@ -107,8 +124,8 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
             ),
         ));
 
-        $this->assertEquals('one', $result->xpath()->evaluate('string(/table/row[1]/@group)'));
-        $this->assertEquals('two', $result->xpath()->evaluate('string(/table/row[2]/@group)'));
+        $this->assertEquals('one', $result->xpath()->evaluate('string(/table/group[1]/@name)'));
+        $this->assertEquals('two', $result->xpath()->evaluate('string(/table/group[2]/@name)'));
     }
 
     /**
@@ -206,7 +223,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
                 ),
             ),
             'sort' => array(
-                'literal' => 'asc',
+                'one' => 'asc',
             ),
         ));
 
@@ -217,17 +234,15 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should sort rows by a multiple columns
-     */
-
-    /**
-     * It should sort based on groups using the group#colname syntax
-     */
-
-    /**
      * It should format the values
-     *
-     * MORE HERE
+     */
+
+    /**
+     * It should allow parameterized tables
+     */
+
+    /**
+     * It should allow the registration of XPath functions
      */
 
     private function assertTable($expected, Document $result)
