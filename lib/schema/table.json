@@ -30,6 +30,9 @@
                                     "type": "string",
                                     "description": "Literal value"
                                 },
+                                "class": {
+                                    "type": "string"
+                                },
                                 "with_items": {
                                     "type": "array",
                                     "description": "Iterate the cell definition with the given values"
@@ -54,6 +57,21 @@
                 { "type": "array" }
             ],
             "description": "Sort the table"
+        },
+        "classes": {
+            "type": "object",
+            "items": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "string"
+                    },
+                    {
+                        "type": "object"
+                    }
+                ],
+                "additionalItems": false
+            }
         }
     }
 }

@@ -6,8 +6,4 @@ class TableInfo
 {
     public $columns = array();
     public $groups = array();
-
-    public function registerColumnName()
-    {
-    }
 }

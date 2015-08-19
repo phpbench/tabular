@@ -234,8 +234,32 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should format the values
+     * It should format the values with printf
      */
+    public function testFormat()
+    {
+        $result = $this->tabulizer->tabularize($this->document, array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        'one' => array(
+                            'literal' => '100',
+                        ),
+                    ),
+                ),
+            ),
+            'format' => array(
+                'one' => 'euro',
+            ),
+            'formatters' => array(
+                'euro' => array('type' => 'printf', 'medium' => 'console', 'format' => '€%s'),
+            )
+        ));
+
+        $this->assertEquals(array(
+            array('one' => '€100')
+        ), $result);
+    }
 
     /**
      * It should allow parameterized tables
