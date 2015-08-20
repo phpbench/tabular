@@ -4,12 +4,22 @@ namespace PhpBench\Tabular\Tests\Unit;
 
 use PhpBench\Tabular\Tabulizer;
 use PhpBench\Tabular\Dom\Document;
+use JsonSchema\Validator;
+use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
+use PhpBench\Tabular\Formatter\Format\PrintfFormat;
+use PhpBench\Tabular\TableBuilder;
+use PhpBench\Tabular\Formatter;
 
 class TabulizerTest extends \PHPUnit_Framework_TestCase
 {
     public function __construct()
     {
-        $this->tabulizer = new Tabulizer();
+        $validator = new Validator();
+        $formatRegistry = new ArrayRegistry();
+        $formatRegistry->register('printf', new PrintfFormat());
+        $tableBuilder = new TableBuilder();
+        $formatter = new Formatter($formatRegistry);
+        $this->tabulizer = new Tabulizer($tableBuilder, $validator, $formatter);
         $this->document = new \DOMDocument();
         $this->document->load(__DIR__ . '/fixtures/report.xml');
     }
@@ -243,21 +253,19 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
                 array(
                     'cells' => array(
                         'one' => array(
+                            'class' => 'percent',
                             'literal' => '100',
                         ),
                     ),
                 ),
             ),
-            'format' => array(
-                'one' => 'euro',
+            'classes' => array(
+                'percent' => array('printf', array('format' => '%s percent'))
             ),
-            'formatters' => array(
-                'euro' => array('type' => 'printf', 'medium' => 'console', 'format' => '€%s'),
-            )
         ));
 
-        $this->assertEquals(array(
-            array('one' => '€100')
+        $this->assertTable(array(
+            array('one' => '100 percent')
         ), $result);
     }
 

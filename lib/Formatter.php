@@ -3,6 +3,8 @@
 namespace PhpBench\Tabular;
 
 use PhpBench\Tabular\Formatter\RegistryInterface;
+use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Dom\Element;
 
 class Formatter
 {
@@ -19,33 +21,45 @@ class Formatter
         $cellEls = $document->xpath()->query('//cell[@class]');
 
         foreach ($cellEls as $cellEl) {
-            $class = $cellEl->getAttribute('class');
-            $classContext = $this->getClassDefinition($class);
-            $formatter = $this->registry->get($formatter);
-            $options = $this->resolveOptions($formatter, $options);
-            $value = $formatter->format($cellEl->nodeValue, $options);
-            $cellEl->nodeValue = $value;
+            $this->formatCell($cellEl);
         }
+    }
+
+    private function formatCell(Element $cellEl)
+    {
+        $class = $cellEl->getAttribute('class');
+
+        if (!isset($this->classDefinitions[$class])) {
+            throw new \InvalidArgumentException(sprintf(
+                'No class defined with name "%s", known classes: "%s"',
+                $class, implode('", "', array_keys($this->classDefinitions))
+            ));
+        }
+
+        list($formatterName, $options) = $this->classDefinitions[$class];
+        $formatter = $this->registry->get($formatterName);
+        $defaultOptions = $formatter->getDefaultOptions();
+
+        $diff = array_diff_key($defaultOptions, $options);
+
+        if (count($diff)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Unknown options ["%s"] for formatter "%s" (class "%s"). Known options "%s"',
+                implode('", "', $diff), 
+                $formatterName, 
+                $class,
+                implode('", "', array_keys($defaultOptions))
+            ));
+        }
+
+        $options = array_merge($defaultOptions, $options);
+
+        $value = $formatter->format($cellEl->nodeValue, $options);
+        $cellEl->nodeValue = $value;
     }
 
     public function registerClassDefinition($class, $formatter, array $definition)
     {
         $this->classDefinitions[$class] = array($formatter, $definition);
-    }
-
-    private function getClassDefinition($class)
-    {
-        if (!isset($this->classDefinitions[$class])) {
-            throw new \InvalidArgumentException(sprintf(
-                'Unknown class "%s", known classes: "%s"',
-                $class,
-                implode('", "', array_keys($this->classDefinitions))
-            ));
-        }
-
-        list($formatter, $options) = $this->classDefinitions[$class];
-        $formatter = $this->registry->get($formatter);
-
-        return new ClassContext($class, $formatter, $options);
     }
 }

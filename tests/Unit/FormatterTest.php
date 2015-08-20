@@ -2,9 +2,116 @@
 
 namespace PhpBench\Tabular\Tests\Unit;
 
+use PhpBench\Tabular\Formatter;
+use PhpBench\Tabular\Dom\Document;
+
 class FormatterTest extends \PHPUnit_Framework_TestCase
 {
+    private $registry;
+    private $formatter;
+    private $format;
+
     public function setUp()
     {
+        $this->registry = $this->prophesize('PhpBench\Tabular\Formatter\RegistryInterface');
+        $this->format = $this->prophesize('PhpBench\Tabular\Formatter\FormatInterface');
+        $this->formatter = new Formatter($this->registry->reveal());
+    }
+
+    /**
+     * It should format a table
+     */
+    public function testFormatTable()
+    {
+        $tableDom = $this->createTable(<<<EOT
+<?xml version="1.0"?>
+<table>
+    <row>
+        <cell class="foo" name="boo">bar</cell>
+        <cell class="bar" name="baz">foo</cell>
+    </row>
+</table>
+EOT
+        );
+
+        $this->formatter->registerClassDefinition(
+            'foo',
+            'printf',
+            array('format' => '%s')
+        );
+        $this->formatter->registerClassDefinition(
+            'bar',
+            'printf',
+            array('format' => '%s')
+        );
+        $this->format->getDefaultOptions()->willReturn(array());
+        $this->format->format('bar', array('format' => '%s'))->willReturn('hello');
+        $this->format->format('foo', array('format' => '%s'))->willReturn('hello');
+        $this->registry->get('printf')->willReturn($this->format->reveal());
+        $this->formatter->formatTable(
+            $tableDom
+        );
+
+        $this->assertContains('hello', $tableDom->saveXml());
+    }
+
+    /**
+     * It should throw an exception if there is an undefined class in the XML
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage No class defined
+     */
+    public function testUndefinedClass()
+    {
+        $tableDom = $this->createTable(<<<EOT
+<?xml version="1.0"?>
+<table>
+    <row>
+        <cell class="foo" name="boo">bar</cell>
+    </row>
+</table>
+EOT
+        );
+
+        $this->formatter->formatTable($tableDom);
+    }
+
+    /**
+     * It should throw an exception if unknown options are given to a format
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Unknown options
+     */
+    public function testUnknownOptions()
+    {
+        $tableDom = $this->createTable(<<<EOT
+<?xml version="1.0"?>
+<table>
+    <row>
+        <cell class="foo" name="boo">bar</cell>
+    </row>
+</table>
+EOT
+        );
+
+        $this->formatter->registerClassDefinition(
+            'foo',
+            'printf',
+            array('foo' => 'x', 'bar' => 'y')
+        );
+        $this->format->getDefaultOptions()->willReturn(array('boo' => 'baz', 'baz' => 'boo'));
+        $this->registry->get('printf')->willReturn($this->format->reveal());
+        $this->formatter->formatTable(
+            $tableDom
+        );
+    }
+
+    private function createTable($xml)
+    {
+        $table = new Document();
+        $table->formatOutput = true;
+        $table->loadXml($xml);
+
+        return $table;
     }
 }

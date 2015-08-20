@@ -1,12 +1,15 @@
 <?php
 
-namespace PhpBench\Tabular\Formatter;
+namespace PhpBench\Tabular\Formatter\Registry;
+
+use PhpBench\Tabular\Formatter\RegistryInterface;
+use PhpBench\Tabular\Formatter\FormatInterface;
 
 class ArrayRegistry implements RegistryInterface
 {
     private $formatters = array();
 
-    public function register($name, FormatterInterface $formatter)
+    public function register($name, FormatInterface $formatter)
     {
         if (isset($this->formatters[$name])) {
             throw new \InvalidArgumentException(sprintf(

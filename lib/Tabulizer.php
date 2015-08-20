@@ -16,15 +16,11 @@ class Tabulizer
     private $tableBuilder;
     private $formatter;
 
-    public function __construct(TableBuilder $tableBuilder = null, Validator $validator, Formatter $formatter = null)
+    public function __construct(TableBuilder $tableBuilder, Validator $validator, Formatter $formatter)
     {
-        $this->validator = $validator ?:  new Validator();
-        $this->tableBuilder = $tableBuilder ?: new RowBuilder();
-        $this->formatter = $formatter ?: new Formatter();
-
-        if (null === $formatter) {
-            $this->formatter->register('printf', new PrintfFormat());
-        }
+        $this->validator = $validator;
+        $this->tableBuilder = $tableBuilder;
+        $this->formatter = $formatter;
     }
 
     public function tabularize(\DOMDocument $sourceDom, array $definition)
@@ -36,6 +32,15 @@ class Tabulizer
         if (isset($definition['sort'])) {
             Sort::sortTable($tableDom, $definition['sort']);
         }
+
+        if (isset($definition['classes'])) {
+            foreach ($definition['classes'] as $class => $classDefinition) {
+                list($formatter, $options) = $classDefinition;
+                $this->formatter->registerClassDefinition($class, $formatter, $options);
+            }
+        }
+
+        $this->formatter->formatTable($tableDom);
 
         return $tableDom;
     }

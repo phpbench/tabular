@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpBench\Tabular\Formatter\Formatter;
+namespace PhpBench\Tabular\Formatter\Format;
 
 use PhpBench\Tabular\Formatter\FormatInterface;
 
