@@ -1,6 +1,6 @@
 {
     "name": "phpbench/tabular",
-    "description": "PHP Bench Reporting Framework",
+    "description": "Generate complex tables from simple configuration",
     "license": "MIT",
     "authors": [
         {
