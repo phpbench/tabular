@@ -76,7 +76,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
      * It should throw an exception if the definition is invalid.
      *
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage [rows[0]] The property - cinvalidls - is not defined and the definition does not allow additional properties
+     * @expectedExceptionMessage cinvalidls
      */
     public function testInvalidDefinition()
     {
