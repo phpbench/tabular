@@ -1,0 +1,8 @@
+enabled:
+  - concat_with_spaces
+
+disabled:
+  - array_short_syntax
+  - psr0
+  - phpdoc_indent
+  - phpdoc_params
