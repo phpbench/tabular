@@ -6,4 +6,5 @@ class TableInfo
 {
     public $columns = array();
     public $groups = array();
+    public $passes = array();
 }

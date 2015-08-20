@@ -87,6 +87,12 @@ class TableBuilder
 
                         $cellDefinition = $rowDefinition['cells'][$column->originalName];
 
+                        $pass = null;
+                        if (isset($cellDefinition['pass'])) {
+                            $pass = $cellDefinition['pass'];
+                            $cellEl->setAttribute('pass', $pass);
+                        }
+
                         $cellItem = null;
                         $value = null;
 
@@ -101,10 +107,16 @@ class TableBuilder
                         }
 
                         if (isset($cellDefinition['expr'])) {
+                            $expr = $cellDefinition['expr'];
+                            $expr = $this->substituteTokens($expr, 'row', $rowItem);
+                            $expr = $this->substituteTokens($expr, 'cell', $cellItem);
                             $expr = $this->xpathResolver->replaceFunctions($cellDefinition['expr']);
-                            $value = $sourceXpath->evaluate($expr, $sourceEl);
-                            $value = $this->substituteTokens($value, 'row', $rowItem);
-                            $value = $this->substituteTokens($value, 'cell', $cellItem);
+
+                            if (null === $pass) {
+                                $value = $sourceXpath->evaluate($expr, $sourceEl);
+                            } else {
+                                $value = $expr;
+                            }
                         }
 
                         if (array_key_exists('literal', $cellDefinition)) {
@@ -113,6 +125,17 @@ class TableBuilder
                         }
 
                         $cellEl->nodeValue = $value;
+                    }
+
+                    foreach ($tableInfo->passes as $pass) {
+                        $passCellEls = $tableEl->ownerDocument->xpath()->query('//cell[@pass="' . $pass . '"]');
+
+                        foreach ($passCellEls as $passCellEl) {
+                            $rowEls = $tableEl->ownerDocument->xpath()->query('ancestor::row', $passCellEl);
+                            $rowEl = $rowEls->item(0);
+                            $value = $tableEl->ownerDocument->xpath()->evaluate($passCellEl->nodeValue, $rowEl);
+                            $passCellEl->nodeValue = $value;
+                        }
                     }
                 }
             }
@@ -124,6 +147,7 @@ class TableBuilder
         $tableInfo = new TableInfo();
         $columns = array();
         $groups = array();
+        $passes = array();
 
         foreach ($rowDefinitions as $rowDefinition) {
             if (isset($rowDefinition['group'])) {
@@ -136,6 +160,10 @@ class TableBuilder
                     $cellItems = $cellDefinition['with_items'];
                 }
 
+                if (isset($cellDefinition['pass'])) {
+                    $passes[] = $cellDefinition['pass'];
+                }
+
                 foreach ($cellItems as $paramIndex => $cellItem) {
                     $column = new ColumnInfo();
                     $column->itemIndex = $paramIndex;
@@ -146,9 +174,10 @@ class TableBuilder
                 }
             }
         }
-
+        sort($passes);
         $tableInfo->columns = $columns;
         $tableInfo->groups = array_keys($groups);
+        $tableInfo->passes = $passes;
 
         return $tableInfo;
     }

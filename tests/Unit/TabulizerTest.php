@@ -302,6 +302,32 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
     /**
      * It should allow compiler passes
      */
+    public function testCompilerPass()
+    {
+        $result = $this->tabulizer->tabularize($this->document, array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        'one' => array(
+                            'literal' => 5,
+                        ),
+                        'three' => array(
+                            'pass' => 10,
+                            'expr' => 'sum(//cell[@name="two"]) + 1',
+                        ),
+                        'two' => array(
+                            'pass' => 5,
+                            'expr' => 'sum(//cell[@name="one"])',
+                        ),
+                    ),
+                ),
+            ),
+        ));
+
+        $this->assertTable(array(
+            array('one' => '5', 'two' => '5', 'three' => '6')
+        ), $result);
+    }
 
     private function assertTable($expected, Document $result)
     {
