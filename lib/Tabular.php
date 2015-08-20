@@ -8,7 +8,7 @@ use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Sort;
 use JsonSchema\Validator;
 
-class Tabulizer
+class Tabular
 {
     const DEFAULT_GROUP = '_default';
 
@@ -23,7 +23,7 @@ class Tabulizer
         $this->formatter = $formatter;
     }
 
-    public function tabularize(\DOMDocument $sourceDom, array $definition)
+    public function tabulate(\DOMDocument $sourceDom, array $definition)
     {
         $this->validateDefinition($definition);
 
@@ -60,7 +60,7 @@ class Tabulizer
                 'Invalid table definition: %s%s',
                 PHP_EOL . PHP_EOL, implode(PHP_EOL, $errorString)
             ));
+
         }
     }
 }
-

@@ -181,14 +181,6 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
         ), $result);
     }
 
-    /**
-     * It should allow parameterized tables
-     */
-
-    /**
-     * It should allow the registration of XPath functions
-     */
-
     private function assertTable($expected, Document $result)
     {
         $results = array();

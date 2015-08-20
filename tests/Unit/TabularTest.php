@@ -2,7 +2,7 @@
 
 namespace PhpBench\Tabular\Tests\Unit;
 
-use PhpBench\Tabular\Tabulizer;
+use PhpBench\Tabular\Tabular;
 use PhpBench\Tabular\Dom\Document;
 use JsonSchema\Validator;
 use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
@@ -11,18 +11,21 @@ use PhpBench\Tabular\TableBuilder;
 use PhpBench\Tabular\Formatter;
 use PhpBench\Tabular\Dom\XPathResolver;
 
-class TabulizerTest extends \PHPUnit_Framework_TestCase
+class TabularTest extends \PHPUnit_Framework_TestCase
 {
+    private $tabular;
+    private $document;
+
     public function __construct()
     {
         $validator = new Validator();
         $formatRegistry = new ArrayRegistry();
         $formatRegistry->register('printf', new PrintfFormat());
         $xpathResolver = new XPathResolver();
-        $xpathResolver->registerFunction('hello', 'PhpBench\Tabular\Tests\Unit\TabulizerTest::xpathFunction');
+        $xpathResolver->registerFunction('hello', 'PhpBench\Tabular\Tests\Unit\TabularTest::xpathFunction');
         $tableBuilder = new TableBuilder($xpathResolver);
         $formatter = new Formatter($formatRegistry);
-        $this->tabulizer = new Tabulizer($tableBuilder, $validator, $formatter);
+        $this->tabular = new Tabular($tableBuilder, $validator, $formatter);
         $this->document = new \DOMDocument();
         $this->document->load(__DIR__ . '/fixtures/report.xml');
     }
@@ -37,7 +40,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testTabularize()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 array(
                     'cells' => array(
@@ -68,7 +71,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidDefinition()
     {
-        $this->tabulizer->tabularize($this->document, array(
+        $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 array(
                     'cinvalidls' => array(
@@ -82,7 +85,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithQuery()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 'one' => array(
                     'cells' => array(
@@ -115,7 +118,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testGroups()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 'one' => array(
                     'group' => 'one',
@@ -151,7 +154,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testLiteralCellValue()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 'one' => array(
                     'cells' => array(
@@ -173,7 +176,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testIterateParameterRows()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 array(
                     'group' => 'one',
@@ -199,7 +202,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testIterateParameterCells()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 array(
                     'group' => 'one',
@@ -223,7 +226,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSortSingleColumn()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 array(
                     'cells' => array(
@@ -256,7 +259,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testFormat()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 array(
                     'cells' => array(
@@ -282,7 +285,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCustomXPathFunction()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 array(
                     'cells' => array(
@@ -304,7 +307,7 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCompilerPass()
     {
-        $result = $this->tabulizer->tabularize($this->document, array(
+        $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
                 array(
                     'cells' => array(

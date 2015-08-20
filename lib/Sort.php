@@ -4,7 +4,7 @@ namespace PhpBench\Tabular;
 
 use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Dom\Document;
-use PhpBench\Tabular\Tabulizer;
+use PhpBench\Tabular\TableBuilder;
 
 class Sort
 {
@@ -21,7 +21,7 @@ class Sort
             $parts = explode('#', $columnSpecifier);
 
             if (count($parts) === 1) {
-                $group = Tabulizer::DEFAULT_GROUP;
+                $group = TableBuilder::DEFAULT_GROUP;
                 $columnName = $parts[0];
             } else {
                 $group = $parts[0];
