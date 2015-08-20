@@ -4,6 +4,7 @@ namespace PhpBench\Tabular\Formatter\Registry;
 
 use PhpBench\Tabular\Formatter\RegistryInterface;
 use PhpBench\Tabular\Formatter\FormatInterface;
+use PhpBench\Tabular\Formatter\Format\PrintfFormat;
 
 class ArrayRegistry implements RegistryInterface
 {
