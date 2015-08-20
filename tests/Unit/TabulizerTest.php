@@ -9,6 +9,7 @@ use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
 use PhpBench\Tabular\Formatter\Format\PrintfFormat;
 use PhpBench\Tabular\TableBuilder;
 use PhpBench\Tabular\Formatter;
+use PhpBench\Tabular\Dom\XPathResolver;
 
 class TabulizerTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,11 +18,18 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
         $validator = new Validator();
         $formatRegistry = new ArrayRegistry();
         $formatRegistry->register('printf', new PrintfFormat());
-        $tableBuilder = new TableBuilder();
+        $xpathResolver = new XPathResolver();
+        $xpathResolver->registerFunction('hello', 'PhpBench\Tabular\Tests\Unit\TabulizerTest::xpathFunction');
+        $tableBuilder = new TableBuilder($xpathResolver);
         $formatter = new Formatter($formatRegistry);
         $this->tabulizer = new Tabulizer($tableBuilder, $validator, $formatter);
         $this->document = new \DOMDocument();
         $this->document->load(__DIR__ . '/fixtures/report.xml');
+    }
+
+    public static function xpathFunction()
+    {
+        return 'hello';
     }
 
     /**
@@ -270,11 +278,29 @@ class TabulizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should allow parameterized tables
+     * Its should allow the use of custom xpath functions
      */
+    public function testCustomXPathFunction()
+    {
+        $result = $this->tabulizer->tabularize($this->document, array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        'one' => array(
+                            'expr' => 'string(hello())',
+                        ),
+                    ),
+                ),
+            ),
+        ));
+
+        $this->assertTable(array(
+            array('one' => 'hello')
+        ), $result);
+    }
 
     /**
-     * It should allow the registration of XPath functions
+     * It should allow compiler passes
      */
 
     private function assertTable($expected, Document $result)

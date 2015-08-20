@@ -5,17 +5,23 @@ namespace PhpBench\Tabular\Tests\Unit;
 use PhpBench\Tabular\Tabulizer;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\TableBuilder;
+use Prophecy\Argument;
 
 class TableBuilderTest extends \PHPUnit_Framework_TestCase
 {
     private $rowBuilder;
     private $document;
+    private $xpathResolver;
 
     public function __construct()
     {
-        $this->rowBuilder = new TableBuilder();
+        $this->xpathResolver = $this->prophesize('PhpBench\Tabular\Dom\XPathResolver');
+        $this->rowBuilder = new TableBuilder($this->xpathResolver->reveal());
         $this->document = new \DOMDocument();
         $this->document->load(__DIR__ . '/fixtures/report.xml');
+
+        $this->xpathResolver->replaceFunctions(Argument::any())->will(function ($string) { return $string[0]; });
+        $this->xpathResolver->registerXPathFunctions(Argument::any())->shouldBeCalled();
     }
 
     /**

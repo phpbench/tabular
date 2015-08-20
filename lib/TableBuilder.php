@@ -5,11 +5,18 @@ namespace PhpBench\Tabular;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Sort;
-use JsonSchema\Validator;
+use PhpBench\Tabular\Dom\XPathResolver;
 
 class TableBuilder
 {
     const DEFAULT_GROUP = '_default';
+
+    private $xpathResolver;
+
+    public function __construct(XPathResolver $xpathResolver)
+    {
+        $this->xpathResolver = $xpathResolver;
+    }
 
     /**
      * Transform the source DOM into a series of row elements according
@@ -20,8 +27,11 @@ class TableBuilder
     public function buildTable(\DOMDocument $sourceDom, array $rowDefinitions)
     {
         $tableDom = new Document();
-        $tableEl = $tableDom->createRoot('table');
         $sourceXpath = new \DOMXpath($sourceDom);
+        $this->xpathResolver->registerXPathFunctions($tableDom->xpath());
+        $this->xpathResolver->registerXPathFunctions($sourceXpath);
+
+        $tableEl = $tableDom->createRoot('table');
         $this->iterateRowDefinitions($tableEl, $sourceXpath, $rowDefinitions);
 
         return $tableDom;
@@ -38,6 +48,8 @@ class TableBuilder
             if (isset($rowDefinition['with_query'])) {
                 $selector = $rowDefinition['with_query'];
             }
+
+            $selector = $this->xpathResolver->replaceFunctions($selector);
 
             $rowItems = array(null);
 
@@ -89,7 +101,9 @@ class TableBuilder
                         }
 
                         if (isset($cellDefinition['expr'])) {
-                            $value = $this->substituteTokens($sourceXpath->evaluate($cellDefinition['expr'], $sourceEl), 'row', $rowItem);
+                            $expr = $this->xpathResolver->replaceFunctions($cellDefinition['expr']);
+                            $value = $sourceXpath->evaluate($expr, $sourceEl);
+                            $value = $this->substituteTokens($value, 'row', $rowItem);
                             $value = $this->substituteTokens($value, 'cell', $cellItem);
                         }
 
@@ -146,22 +160,5 @@ class TableBuilder
         }
 
         return preg_replace('/{{\s*?' . $context . '\.item\s*}}/', $value, $subject);
-    }
-
-    private function validateDefinition(array $definition)
-    {
-        $definition = json_decode(json_encode($definition));
-        $this->validator->check($definition, json_decode(file_get_contents(__DIR__ . '/schema/table.json')));
-
-        if (!$this->validator->isValid()) {
-            $errorString = array();
-            foreach ($this->validator->getErrors() as $error) {
-                $errorString[] = sprintf('[%s] %s', $error['property'], $error['message']);
-            }
-            throw new \InvalidArgumentException(sprintf(
-                'Invalid table definition: %s%s',
-                PHP_EOL . PHP_EOL, implode(PHP_EOL, $errorString)
-            ));
-        }
     }
 }
