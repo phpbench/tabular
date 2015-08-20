@@ -1,6 +1,9 @@
 Tabular
 =======
 
+[![Build Status](https://travis-ci.org/phpbench/tabular.svg?branch=master)](https://travis-ci.org/phpbench/tabular)
+[![StyleCI](https://styleci.io/repos/40823691/shield)](https://styleci.io/repos/40823691)
+
 Tabular is a library for transforming a source XML document into a tabular XML
 document using a given configuration. The resulting tabular XML document can
 then transformed or used to easily render tables (for example in HTML or in
@@ -161,3 +164,4 @@ $tableDom = $tabular->tabulate($dom, array(
 
 The word "euro" will now be suffixed on all the cells with the class
 ``price``.
+
