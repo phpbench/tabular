@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit;
 
-use PhpBench\Tabular\Sort;
 use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Sort;
 
 class SortTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,7 +45,7 @@ class SortTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should sort a table
+     * It should sort a table.
      */
     public function testSortTable()
     {
@@ -63,7 +72,7 @@ EOT
 
     /**
      * It should sort only a specific group
-     * It should sort alphabetically
+     * It should sort alphabetically.
      */
     public function testSortTableGroup()
     {
@@ -99,7 +108,7 @@ EOT
     }
 
     /**
-     * It should sort descending
+     * It should sort descending.
      */
     public function sortDescending()
     {
@@ -125,7 +134,7 @@ EOT
     }
 
     /**
-     * It should sort with multiple columns
+     * It should sort with multiple columns.
      */
     public function testSortMultipleColumns()
     {

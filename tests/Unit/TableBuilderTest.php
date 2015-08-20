@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit;
 
-use PhpBench\Tabular\Tabulizer;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\TableBuilder;
 use Prophecy\Argument;
@@ -25,7 +33,7 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should convert transform an XML document into a table using a given configuration
+     * It should convert transform an XML document into a table using a given configuration.
      */
     public function testTabularize()
     {
@@ -51,7 +59,7 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should iterate over a query to generate more rows
+     * It should iterate over a query to generate more rows.
      */
     public function testWithQuery()
     {
@@ -82,7 +90,7 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should apply groups to the table DOM
+     * It should apply groups to the table DOM.
      */
     public function testGroups()
     {
@@ -116,7 +124,7 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should allow literal cell values
+     * It should allow literal cell values.
      */
     public function testLiteralCellValue()
     {
@@ -136,7 +144,7 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should iterate over parameters on ROWS
+     * It should iterate over parameters on ROWS.
      */
     public function testIterateParameterRows()
     {
@@ -160,7 +168,7 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
 
     /**
      * It should iterate over parameters on CELLS
-     * It should dynamically create columns using CELLS
+     * It should dynamically create columns using CELLS.
      */
     public function testIterateParameterCells()
     {

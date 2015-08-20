@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit\Formatter;
 
 use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
@@ -16,7 +25,7 @@ class ArrayRegistryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should register and retrieve formats
+     * It should register and retrieve formats.
      */
     public function testRegisterRetrieve()
     {
@@ -26,7 +35,7 @@ class ArrayRegistryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if an attempt is made to add a duplicate format
+     * It should throw an exception if an attempt is made to add a duplicate format.
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Formatter with name
@@ -38,7 +47,7 @@ class ArrayRegistryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if an unknown formatter is requiested
+     * It should throw an exception if an unknown formatter is requiested.
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Unknown formatter

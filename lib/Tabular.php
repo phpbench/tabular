@@ -1,11 +1,16 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular;
 
-use PhpBench\Tabular\Formatter\Formatter\PrintfFormat;
-use PhpBench\Tabular\Dom\Document;
-use PhpBench\Tabular\Dom\Element;
-use PhpBench\Tabular\Sort;
 use JsonSchema\Validator;
 
 class Tabular
@@ -60,7 +65,6 @@ class Tabular
                 'Invalid table definition: %s%s',
                 PHP_EOL . PHP_EOL, implode(PHP_EOL, $errorString)
             ));
-
         }
     }
 }

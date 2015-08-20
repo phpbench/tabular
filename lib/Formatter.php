@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular;
 
-use PhpBench\Tabular\Formatter\RegistryInterface;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
+use PhpBench\Tabular\Formatter\RegistryInterface;
 
 class Formatter
 {
@@ -45,8 +54,8 @@ class Formatter
         if (count($diff)) {
             throw new \InvalidArgumentException(sprintf(
                 'Unknown options ["%s"] for formatter "%s" (class "%s"). Known options "%s"',
-                implode('", "', $diff), 
-                $formatterName, 
+                implode('", "', $diff),
+                $formatterName,
                 $class,
                 implode('", "', array_keys($defaultOptions))
             ));

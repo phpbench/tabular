@@ -1,15 +1,24 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit;
 
-use PhpBench\Tabular\Tabular;
-use PhpBench\Tabular\Dom\Document;
 use JsonSchema\Validator;
-use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
-use PhpBench\Tabular\Formatter\Format\PrintfFormat;
-use PhpBench\Tabular\TableBuilder;
-use PhpBench\Tabular\Formatter;
+use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\XPathResolver;
+use PhpBench\Tabular\Formatter;
+use PhpBench\Tabular\Formatter\Format\PrintfFormat;
+use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
+use PhpBench\Tabular\TableBuilder;
+use PhpBench\Tabular\Tabular;
 
 class TabularTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,7 +45,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should convert transform an XML document into a table using a given configuration
+     * It should convert transform an XML document into a table using a given configuration.
      */
     public function testTabularize()
     {
@@ -64,7 +73,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if the definition is invalid
+     * It should throw an exception if the definition is invalid.
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage [rows[0]] The property - cinvalidls - is not defined and the definition does not allow additional properties
@@ -77,11 +86,11 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                     'cinvalidls' => array(
                 ),
             ),
-        )));
+        ), ));
     }
 
     /**
-     * It should iterate over a query to generate more rows
+     * It should iterate over a query to generate more rows.
      */
     public function testWithQuery()
     {
@@ -114,7 +123,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should apply groups to the table DOM
+     * It should apply groups to the table DOM.
      */
     public function testGroups()
     {
@@ -150,7 +159,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should allow literal cell values
+     * It should allow literal cell values.
      */
     public function testLiteralCellValue()
     {
@@ -172,7 +181,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should iterate over parameters on ROWS
+     * It should iterate over parameters on ROWS.
      */
     public function testIterateParameterRows()
     {
@@ -198,7 +207,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
 
     /**
      * It should iterate over parameters on CELLS
-     * It should dynamically create columns using CELLS
+     * It should dynamically create columns using CELLS.
      */
     public function testIterateParameterCells()
     {
@@ -222,7 +231,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should sort rows by a single column ascending
+     * It should sort rows by a single column ascending.
      */
     public function testSortSingleColumn()
     {
@@ -255,7 +264,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should format the values with printf
+     * It should format the values with printf.
      */
     public function testFormat()
     {
@@ -271,17 +280,17 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                 ),
             ),
             'classes' => array(
-                'percent' => array('printf', array('format' => '%s percent'))
+                'percent' => array('printf', array('format' => '%s percent')),
             ),
         ));
 
         $this->assertTable(array(
-            array('one' => '100 percent')
+            array('one' => '100 percent'),
         ), $result);
     }
 
     /**
-     * Its should allow the use of custom xpath functions
+     * Its should allow the use of custom xpath functions.
      */
     public function testCustomXPathFunction()
     {
@@ -298,12 +307,12 @@ class TabularTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertTable(array(
-            array('one' => 'hello')
+            array('one' => 'hello'),
         ), $result);
     }
 
     /**
-     * It should allow compiler passes
+     * It should allow compiler passes.
      */
     public function testCompilerPass()
     {
@@ -328,7 +337,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertTable(array(
-            array('one' => '5', 'two' => '5', 'three' => '6')
+            array('one' => '5', 'two' => '5', 'three' => '6'),
         ), $result);
     }
 

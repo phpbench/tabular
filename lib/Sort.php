@@ -1,10 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular;
 
-use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Dom\Document;
-use PhpBench\Tabular\TableBuilder;
+use PhpBench\Tabular\Dom\Element;
 
 class Sort
 {
@@ -36,7 +44,7 @@ class Sort
                 $rowEls = $groups[$group];
             }
 
-            Sort::mergesort($rowEls, function (Element $rowEl1, Element $rowEl2) use ($columnName, $direction) {
+            self::mergesort($rowEls, function (Element $rowEl1, Element $rowEl2) use ($columnName, $direction) {
                 $cellEl1 = $rowEl1->query('.//cell[@name="' . $columnName . '"]')->item(0);
                 $cellEl2 = $rowEl2->query('.//cell[@name="' . $columnName . '"]')->item(0);
 

@@ -1,10 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular;
 
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
-use PhpBench\Tabular\Sort;
 use PhpBench\Tabular\Dom\XPathResolver;
 
 class TableBuilder
@@ -42,7 +50,6 @@ class TableBuilder
         $tableInfo = $this->getTableInfo($rowDefinitions);
 
         foreach ($rowDefinitions as $rowDefinition) {
-
             $selector = '/';
 
             if (isset($rowDefinition['with_query'])) {
@@ -77,7 +84,6 @@ class TableBuilder
                     $rowEl = $groupEl->appendElement('row');
 
                     foreach ($tableInfo->columns as $columnName => $column) {
-
                         $cellEl = $rowEl->appendElement('cell');
                         $cellEl->setAttribute('name', $columnName);
 

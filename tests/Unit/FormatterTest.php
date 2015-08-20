@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit;
 
-use PhpBench\Tabular\Formatter;
 use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Formatter;
 
 class FormatterTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +28,7 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should format a table
+     * It should format a table.
      */
     public function testFormatTable()
     {
@@ -56,7 +65,7 @@ EOT
     }
 
     /**
-     * It should throw an exception if there is an undefined class in the XML
+     * It should throw an exception if there is an undefined class in the XML.
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage No class defined
@@ -77,7 +86,7 @@ EOT
     }
 
     /**
-     * It should throw an exception if unknown options are given to a format
+     * It should throw an exception if unknown options are given to a format.
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Unknown options

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit\Formatter\Formatter;
 
 use PhpBench\Tabular\Formatter\Format\NumberFormat;
@@ -14,12 +23,11 @@ class NumberFormatTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should format a number
+     * It should format a number.
      */
     public function testNumberFormat()
     {
         $result = $this->format->format(1000000, $this->format->getDefaultOptions());
         $this->assertEquals('1,000,000', $result);
     }
-
 }

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit\Dom;
 
 use PhpBench\Tabular\Dom\XPathResolver;
@@ -14,7 +23,7 @@ class XPathResolverTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should expand function names to their php:function forms
+     * It should expand function names to their php:function forms.
      *
      * @dataProvider provideFunctionNameReplace
      */
@@ -43,17 +52,17 @@ class XPathResolverTest extends \PHPUnit_Framework_TestCase
             ),
             array(
                 'average(min(//foobar/@time))',
-                'php:function(\'Bar\\Foo\\Bar::average\', php:function(\'Bar\\Foo\\Bar::min\', //foobar/@time))'
+                'php:function(\'Bar\\Foo\\Bar::average\', php:function(\'Bar\\Foo\\Bar::min\', //foobar/@time))',
             ),
             array(
                 'average(//foobar/@time)',
-                'php:function(\'Bar\\Foo\\Bar::average\', //foobar/@time)'
+                'php:function(\'Bar\\Foo\\Bar::average\', //foobar/@time)',
             ),
         );
     }
 
     /**
-     * It should throw an exception if an unknown function is encountered
+     * It should throw an exception if an unknown function is encountered.
      *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Unknown Tabular XPath function "barbar" in query "barbar(//bar)". Known Tabular functions: "average"
