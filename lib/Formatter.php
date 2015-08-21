@@ -40,11 +40,15 @@ class Formatter
         $value = $cellEl->nodeValue;
 
         foreach ($formatterDefinitions as $formatterDefinition) {
-            list($formatterName, $options) = $formatterDefinition;
+            if (count($formatterDefinition) == 2) {
+                list($formatterName, $options) = $formatterDefinition;
+            } else {
+                list($formatterName) = $formatterDefinition;
+            }
             $formatter = $this->registry->get($formatterName);
             $defaultOptions = $formatter->getDefaultOptions();
 
-            $diff = array_diff_key($defaultOptions, $options);
+            $diff = array_diff_key($options, $defaultOptions);
 
             if (count($diff)) {
                 throw new \InvalidArgumentException(sprintf(

@@ -41,15 +41,29 @@ class TableBuilder
         $this->xpathResolver->registerXPathFunctions($sourceXpath);
 
         $tableEl = $tableDom->createRoot('table');
-        $this->iterateRowDefinitions($tableEl, $sourceXpath, $rowDefinitions);
+        $tableInfo = $this->getTableInfo($rowDefinitions);
+        $this->iterateRowDefinitions($tableInfo, $tableEl, $sourceXpath, $rowDefinitions);
+        $this->executePasses($tableInfo, $tableEl);
 
         return $tableDom;
     }
 
-    private function iterateRowDefinitions(Element $tableEl, XPath $sourceXpath, $rowDefinitions)
+    private function executePasses(TableInfo $tableInfo, Element $tableEl)
     {
-        $tableInfo = $this->getTableInfo($rowDefinitions);
+        foreach ($tableInfo->passes as $pass) {
+            $passCellEls = $tableEl->ownerDocument->xpath()->query('//cell[@pass="' . $pass . '"]');
 
+            foreach ($passCellEls as $passCellEl) {
+                $rowEls = $tableEl->ownerDocument->xpath()->query('ancestor::row', $passCellEl);
+                $rowEl = $rowEls->item(0);
+                $value = $tableEl->ownerDocument->xpath()->evaluate($passCellEl->nodeValue, $rowEl);
+                $passCellEl->nodeValue = $value;
+            }
+        }
+    }
+
+    private function iterateRowDefinitions(TableInfo $tableInfo, Element $tableEl, XPath $sourceXpath, $rowDefinitions)
+    {
         foreach ($rowDefinitions as $rowDefinition) {
             $selector = '/';
 
@@ -88,11 +102,13 @@ class TableBuilder
                         $cellEl = $rowEl->appendElement('cell');
                         $cellEl->setAttribute('name', $columnName);
 
-                        if (!isset($rowDefinition['cells'][$column->originalName])) {
+                        $definitionName = isset($rowDefinition['cells'][$column->originalName]) ? $column->originalName : $column->name;
+
+                        if (!isset($rowDefinition['cells'][$definitionName])) {
                             continue;
                         }
 
-                        $cellDefinition = $rowDefinition['cells'][$column->originalName];
+                        $cellDefinition = $rowDefinition['cells'][$definitionName];
 
                         $pass = null;
                         if (isset($cellDefinition['pass'])) {
@@ -117,7 +133,7 @@ class TableBuilder
                             $expr = $cellDefinition['expr'];
                             $expr = $this->substituteTokens($expr, 'row', $rowItem);
                             $expr = $this->substituteTokens($expr, 'cell', $cellItem);
-                            $expr = $this->xpathResolver->replaceFunctions($cellDefinition['expr']);
+                            $expr = $this->xpathResolver->replaceFunctions($expr);
 
                             if (null === $pass) {
                                 $value = $sourceXpath->evaluate($expr, $sourceEl);
@@ -133,42 +149,9 @@ class TableBuilder
 
                         $cellEl->nodeValue = $value;
                     }
-
-                    foreach ($tableInfo->passes as $pass) {
-                        $passCellEls = $tableEl->ownerDocument->xpath()->query('//cell[@pass="' . $pass . '"]');
-
-                        foreach ($passCellEls as $passCellEl) {
-                            $rowEls = $tableEl->ownerDocument->xpath()->query('ancestor::row', $passCellEl);
-                            $rowEl = $rowEls->item(0);
-                            $value = $tableEl->ownerDocument->xpath()->evaluate($passCellEl->nodeValue, $rowEl);
-                            $passCellEl->nodeValue = $value;
-                        }
-                    }
                 }
             }
         }
-    }
-
-    private function evaluate(\DOMXpath $xpath, $expr, $contextEl)
-    {
-        libxml_use_internal_errors(true);
-        $value = $xpath->evaluate($expr, $contextEl);
-
-        if (false === $value) {
-            $xmlErrors = libxml_get_errors();
-            $errors = array();
-            foreach ($xmlErrors as $xmlError) {
-                $errors[] = sprintf('[%s] %s', $xmlError->code, $xmlError->message);
-            }
-
-            throw new \InvalidArgumentException(sprintf(
-                'Errors encountered when evaluating expression "%s": %s%s',
-                $expr, PHP_EOL, implode(PHP_EOL, $errors)
-            ));
-        }
-        libxml_use_internal_errors(false);
-
-        return $value;
     }
 
     private function getTableInfo($rowDefinitions)
@@ -217,6 +200,8 @@ class TableBuilder
             return $subject;
         }
 
-        return preg_replace('/{{\s*?' . $context . '\.item\s*}}/', $value, $subject);
+        $result = preg_replace('/{{\s*?' . $context . '\.item\s*}}/', $value, $subject);
+
+        return $result;
     }
 }
