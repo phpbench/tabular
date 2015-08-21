@@ -15,16 +15,19 @@ use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Dom\XPath;
 use PhpBench\Tabular\Dom\XPathResolver;
+use PhpBench\Tabular\TokenReplacer;
 
 class TableBuilder
 {
     const DEFAULT_GROUP = '_default';
 
     private $xpathResolver;
+    private $tokenReplacer;
 
     public function __construct(XPathResolver $xpathResolver)
     {
         $this->xpathResolver = $xpathResolver;
+        $this->tokenReplacer = new TokenReplacer();
     }
 
     /**
@@ -131,8 +134,7 @@ class TableBuilder
 
                         if (isset($cellDefinition['expr'])) {
                             $expr = $cellDefinition['expr'];
-                            $expr = $this->substituteTokens($expr, 'row', $rowItem);
-                            $expr = $this->substituteTokens($expr, 'cell', $cellItem);
+                            $expr = $this->tokenReplacer->replaceTokens($expr, $rowItem, $cellItem);
                             $expr = $this->xpathResolver->replaceFunctions($expr);
 
                             if (null === $pass) {
@@ -143,8 +145,7 @@ class TableBuilder
                         }
 
                         if (array_key_exists('literal', $cellDefinition)) {
-                            $value = $this->substituteTokens($cellDefinition['literal'], 'row', $rowItem);
-                            $value = $this->substituteTokens($value, 'cell', $cellItem);
+                            $value = $this->tokenReplacer->replaceTokens($cellDefinition['literal'], $rowItem, $cellItem);
                         }
 
                         $cellEl->nodeValue = $value;
@@ -180,7 +181,7 @@ class TableBuilder
                     $column = new ColumnInfo();
                     $column->itemIndex = $paramIndex;
                     $column->originalName = $cellName;
-                    $evaledCellName = $this->substituteTokens($cellName, 'cell', $cellItem);
+                    $evaledCellName = $this->tokenReplacer->replaceTokens($cellName, null, $cellItem);
                     $column->name = $evaledCellName;
                     $columns[$evaledCellName] = $column;
                 }
@@ -192,16 +193,5 @@ class TableBuilder
         $tableInfo->passes = $passes;
 
         return $tableInfo;
-    }
-
-    private function substituteTokens($subject, $context, $value)
-    {
-        if (null === $value) {
-            return $subject;
-        }
-
-        $result = preg_replace('/{{\s*?' . $context . '\.item\s*}}/', $value, $subject);
-
-        return $result;
     }
 }
