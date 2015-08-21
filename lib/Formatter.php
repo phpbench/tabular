@@ -53,7 +53,7 @@ class Formatter
             if (count($diff)) {
                 throw new \InvalidArgumentException(sprintf(
                     'Unknown options ["%s"] for formatter "%s" (class "%s"). Known options "%s"',
-                    implode('", "', $diff), 
+                    implode('", "', array_keys($diff)), 
                     $formatterName, 
                     $class,
                     implode('", "', array_keys($defaultOptions))

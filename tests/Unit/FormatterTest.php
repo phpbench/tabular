@@ -53,7 +53,7 @@ EOT
             'printf',
             array('format' => '%s')
         );
-        $this->format->getDefaultOptions()->willReturn(array());
+        $this->format->getDefaultOptions()->willReturn(array('format' => 'xx'));
         $this->format->format('bar', array('format' => '%s'))->willReturn('hello');
         $this->format->format('foo', array('format' => '%s'))->willReturn('hello');
         $this->registry->get('printf')->willReturn($this->format->reveal());
