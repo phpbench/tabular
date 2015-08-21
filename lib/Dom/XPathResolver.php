@@ -57,7 +57,7 @@ class XPathResolver
 
     public function replaceFunctions($xpathQuery)
     {
-        preg_match_all('{([a-z]+)\((\)?)}', $xpathQuery, $matches);
+        preg_match_all('{([a-zA-Z0-9_-]+)\((\)?)}', $xpathQuery, $matches);
 
         foreach ($matches[1] as $index => $name) {
             if (isset($this->xpathFunctions[$name])) {

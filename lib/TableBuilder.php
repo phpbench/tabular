@@ -14,6 +14,7 @@ namespace PhpBench\Tabular;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Dom\XPathResolver;
+use PhpBench\Tabular\Dom\XPath;
 
 class TableBuilder
 {
@@ -35,7 +36,7 @@ class TableBuilder
     public function buildTable(\DOMDocument $sourceDom, array $rowDefinitions)
     {
         $tableDom = new Document();
-        $sourceXpath = new \DOMXpath($sourceDom);
+        $sourceXpath = new XPath($sourceDom);
         $this->xpathResolver->registerXPathFunctions($tableDom->xpath());
         $this->xpathResolver->registerXPathFunctions($sourceXpath);
 
@@ -45,7 +46,7 @@ class TableBuilder
         return $tableDom;
     }
 
-    private function iterateRowDefinitions(Element $tableEl, \DOMXpath $sourceXpath, $rowDefinitions)
+    private function iterateRowDefinitions(Element $tableEl, XPath $sourceXpath, $rowDefinitions)
     {
         $tableInfo = $this->getTableInfo($rowDefinitions);
 
@@ -146,6 +147,28 @@ class TableBuilder
                 }
             }
         }
+    }
+
+    private function evaluate(\DOMXpath $xpath, $expr, $contextEl)
+    {
+        libxml_use_internal_errors(true);
+        $value = $xpath->evaluate($expr, $contextEl);
+
+        if (false === $value) {
+            $xmlErrors = libxml_get_errors();
+            $errors = array();
+            foreach ($xmlErrors as $xmlError) {
+                $errors[] = sprintf('[%s] %s', $xmlError->code, $xmlError->message);
+            }
+
+            throw new \InvalidArgumentException(sprintf(
+                'Errors encountered when evaluating expression "%s": %s%s',
+                $expr, PHP_EOL, implode(PHP_EOL, $errors)
+            ));
+        }
+        libxml_use_internal_errors(false);
+
+        return $value;
     }
 
     private function getTableInfo($rowDefinitions)

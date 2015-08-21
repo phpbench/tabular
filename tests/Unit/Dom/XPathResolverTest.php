@@ -31,6 +31,7 @@ class XPathResolverTest extends \PHPUnit_Framework_TestCase
     {
         $this->xpathResolver->registerFunction('average', 'Bar\\Foo\\Bar::average');
         $this->xpathResolver->registerFunction('min', 'Bar\\Foo\\Bar::min');
+        $this->xpathResolver->registerFunction('min_max', 'Bar\\Foo\\Bar::min_max');
         $query = $this->xpathResolver->replaceFunctions($query);
         $this->assertEquals($expected, $query);
     }
@@ -38,6 +39,10 @@ class XPathResolverTest extends \PHPUnit_Framework_TestCase
     public function provideFunctionNameReplace()
     {
         return array(
+            array(
+                'min_max()',
+                'php:function(\'Bar\\Foo\\Bar::min_max\')',
+            ),
             array(
                 'min()',
                 'php:function(\'Bar\\Foo\\Bar::min\')',
