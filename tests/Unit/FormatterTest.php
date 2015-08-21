@@ -43,12 +43,12 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
 EOT
         );
 
-        $this->formatter->registerClassDefinition(
+        $this->formatter->appendClassDefinition(
             'foo',
             'printf',
             array('format' => '%s')
         );
-        $this->formatter->registerClassDefinition(
+        $this->formatter->appendClassDefinition(
             'bar',
             'printf',
             array('format' => '%s')
@@ -103,7 +103,7 @@ EOT
 EOT
         );
 
-        $this->formatter->registerClassDefinition(
+        $this->formatter->appendClassDefinition(
             'foo',
             'printf',
             array('foo' => 'x', 'bar' => 'y')

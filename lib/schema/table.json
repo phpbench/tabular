@@ -4,10 +4,7 @@
     "additionalProperties": false,
     "properties": {
         "rows": {
-            "oneOf": [
-                { "type": "object" },
-                { "type": "array" }
-            ],
+            "type": "array",
             "items": {
                 "type": "object",
                 "additionalProperties": false,
@@ -64,17 +61,24 @@
         },
         "classes": {
             "type": "object",
-            "items": {
-                "type": "array",
-                "items": [
-                    {
-                        "type": "string"
-                    },
-                    {
-                        "type": "object"
+            "description": "Class to definition list",
+            "patternProperties": {
+                "^.*$": {
+                    "type": "array",
+                    "description": "List of definitions",
+                    "items": {
+                        "type": "array",
+                        "description": "Definition",
+                        "items": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "object"
+                            }
+                        ]
                     }
-                ],
-                "additionalItems": false
+                }
             }
         }
     }

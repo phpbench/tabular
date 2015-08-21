@@ -40,8 +40,10 @@ class Tabular
 
         if (isset($definition['classes'])) {
             foreach ($definition['classes'] as $class => $classDefinition) {
-                list($formatter, $options) = $classDefinition;
-                $this->formatter->registerClassDefinition($class, $formatter, $options);
+                foreach ($classDefinition as $formatDefinition) {
+                    list($formatter, $options) = $formatDefinition;
+                    $this->formatter->appendClassDefinition($class, $formatter, $options);
+                }
             }
         }
 

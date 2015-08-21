@@ -96,7 +96,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
-                'one' => array(
+                array(
                     'cells' => array(
                         'time' => array(
                             'expr' => 'sum(.//iteration/@time)',
@@ -129,7 +129,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
-                'one' => array(
+                array(
                     'group' => 'one',
                     'cells' => array(
                         'time' => array(
@@ -140,7 +140,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                         ),
                     ),
                 ),
-                'two' => array(
+                array(
                     'group' => 'two',
                     'cells' => array(
                         'time' => array(
@@ -165,7 +165,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->tabular->tabulate($this->document, array(
             'rows' => array(
-                'one' => array(
+                array(
                     'cells' => array(
                         'one' => array(
                             'literal' => 'Helli',
@@ -280,12 +280,15 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                 ),
             ),
             'classes' => array(
-                'percent' => array('printf', array('format' => '%s percent')),
+                'percent' => array(
+                    array('printf', array('format' => '%s percent')),
+                    array('printf', array('format' => 'this is %s')),
+                ),
             ),
         ));
 
         $this->assertTable(array(
-            array('one' => '100 percent'),
+            array('one' => 'this is 100 percent'),
         ), $result);
     }
 

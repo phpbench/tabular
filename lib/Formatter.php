@@ -1,19 +1,10 @@
 <?php
 
-/*
- * This file is part of the Tabular  package
- *
- * (c) Daniel Leech <daniel@dantleech.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace PhpBench\Tabular;
 
+use PhpBench\Tabular\Formatter\RegistryInterface;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
-use PhpBench\Tabular\Formatter\RegistryInterface;
 
 class Formatter
 {
@@ -45,30 +36,40 @@ class Formatter
             ));
         }
 
-        list($formatterName, $options) = $this->classDefinitions[$class];
-        $formatter = $this->registry->get($formatterName);
-        $defaultOptions = $formatter->getDefaultOptions();
+        $formatterDefinitions = $this->classDefinitions[$class];
+        $value = $cellEl->nodeValue;
 
-        $diff = array_diff_key($defaultOptions, $options);
+        foreach ($formatterDefinitions as $formatterDefinition) {
+            list($formatterName, $options) = $formatterDefinition;
+            $formatter = $this->registry->get($formatterName);
+            $defaultOptions = $formatter->getDefaultOptions();
 
-        if (count($diff)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Unknown options ["%s"] for formatter "%s" (class "%s"). Known options "%s"',
-                implode('", "', $diff),
-                $formatterName,
-                $class,
-                implode('", "', array_keys($defaultOptions))
-            ));
+            $diff = array_diff_key($defaultOptions, $options);
+
+            if (count($diff)) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Unknown options ["%s"] for formatter "%s" (class "%s"). Known options "%s"',
+                    implode('", "', $diff), 
+                    $formatterName, 
+                    $class,
+                    implode('", "', array_keys($defaultOptions))
+                ));
+            }
+
+            $options = array_merge($defaultOptions, $options);
+
+            $value = $formatter->format($value, $options);
         }
 
-        $options = array_merge($defaultOptions, $options);
-
-        $value = $formatter->format($cellEl->nodeValue, $options);
         $cellEl->nodeValue = $value;
     }
 
-    public function registerClassDefinition($class, $formatter, array $definition)
+    public function appendClassDefinition($class, $formatter, array $definition)
     {
-        $this->classDefinitions[$class] = array($formatter, $definition);
+        if (!isset($this->classDefinitions[$class])) {
+            $this->classDefinitions[$class] = array();
+        }
+
+        $this->classDefinitions[$class][] = array($formatter, $definition);
     }
 }
