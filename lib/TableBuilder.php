@@ -15,7 +15,6 @@ use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Dom\XPath;
 use PhpBench\Tabular\Dom\XPathResolver;
-use PhpBench\Tabular\TokenReplacer;
 
 class TableBuilder
 {
@@ -129,7 +128,10 @@ class TableBuilder
                         }
 
                         if (isset($cellDefinition['class'])) {
-                            $cellEl->setAttribute('class', $cellDefinition['class']);
+                            $class = $this->tokenReplacer->replaceTokens($cellDefinition['class'], $rowItem, $cellItem);
+                            if ($class) {
+                                $cellEl->setAttribute('class', $class);
+                            }
                         }
 
                         if (isset($cellDefinition['expr'])) {

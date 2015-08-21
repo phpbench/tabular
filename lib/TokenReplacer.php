@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular;
 
 class TokenReplacer
@@ -69,13 +78,13 @@ class TokenReplacer
 
     private function resolveValue($parts, $value)
     {
-        if (is_scalar($value)) {
+        if (null === $value || is_scalar($value)) {
             return $value;
         }
 
         $part = array_shift($parts);
 
-        if (!isset($value[$part])) {
+        if (!array_key_exists($part, $value)) {
             throw new \InvalidArgumentException(sprintf(
                 'Key "%s" not present in value "%s"',
                 $part, print_r($value, true)
