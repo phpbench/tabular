@@ -13,7 +13,7 @@ namespace PhpBench\Tabular;
 
 class TokenReplacer
 {
-    public function replaceTokens($subject, $rowItem, $cellItem)
+    public function replaceTokens($subject, $rowItem, $cellItem, array $parameters = array())
     {
         preg_match_all('/{{\s*(.*?)\s*}}/', $subject, $matches);
 
@@ -36,14 +36,17 @@ class TokenReplacer
                 ));
             }
 
-            if (!in_array($context, array('cell', 'row'))) {
+            if (!in_array($context, array('cell', 'row', 'param'))) {
                 throw new \InvalidArgumentException(sprintf(
                     'Unknown parameter context "%s" in "%s" must be either "cell" or "row"',
                     $context, $token
                 ));
             }
 
-            if ($context === 'row') {
+            if ($context === 'param') {
+                $value = $parameters;
+            }
+            elseif ($context === 'row') {
                 $value = $rowItem;
             } else {
                 $value = $cellItem;

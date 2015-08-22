@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Tabular  package
- *
- * (c) Daniel Leech <daniel@dantleech.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace PhpBench\Tabular\Tests\Unit;
 
 use PhpBench\Tabular\TokenReplacer;
@@ -25,13 +16,12 @@ class TokenReplacerTest extends \PHPUnit_Framework_TestCase
     /**
      * It should replace tokens with scalars
      * It should replace tokens with arrays
-     * *.
-     *
+     * *
      * @dataProvider provideScalarReplace
      */
-    public function testScalarReplace($subject, $rowItem, $cellItem, $expected)
+    public function testScalarReplace($subject, $rowItem, $cellItem, array $parameters, $expected)
     {
-        $result = $this->tokenReplacer->replaceTokens($subject, $rowItem, $cellItem);
+        $result = $this->tokenReplacer->replaceTokens($subject, $rowItem, $cellItem, $parameters);
         $this->assertEquals($expected, $result);
     }
 
@@ -42,25 +32,42 @@ class TokenReplacerTest extends \PHPUnit_Framework_TestCase
                 '//row[@name="{{ row.item }}"]//{{ cell.item }}',
                 'row-item',
                 'cell-item',
+                array(),
                 '//row[@name="row-item"]//cell-item',
             ),
             array(
                 '{{ cell.class }}-{{ cell.foo }}',
                 'cell',
                 array('class' => 'orange', 'foo' => 'bar'),
+                array(),
                 'orange-bar',
             ),
             array(
                 '{{ cell.class.color.bolar }}',
                 null,
                 array('class' => array('color' => array('bolar' => 'blue'))),
+                array(),
                 'blue',
+            ),
+            array(
+                '{{ param.foo }}',
+                null,
+                null,
+                array('foo' => 'bar'),
+                'bar',
+            ),
+            array(
+                '{{ param.foo.boo }}-{{ cell.item }}',
+                null,
+                'foo',
+                array('foo' => array('boo' => 'baz')),
+                'baz-foo',
             ),
         );
     }
 
     /**
-     * It should throw an exception if the token has no body.
+     * It should throw an exception if the token has no body
      *
      * @dataProvider provideEmptyTokenBody
      * @expectedException InvalidArgumentException
@@ -85,7 +92,7 @@ class TokenReplacerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if the parameter context is invalid.
+     * It should throw an exception if the parameter context is invalid
      *
      * @dataProvider provideInvalidParameterContext
      * @expectedException InvalidArgumentException
@@ -110,7 +117,7 @@ class TokenReplacerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * It should throw an exception if a simple scalar value is provided and
-     * the param is not named *.item.
+     * the param is not named *.item
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage The token "{{ cell.barbar }}" is to be replaced by a simple scalar value, it should be named "cell.item"
@@ -125,7 +132,7 @@ class TokenReplacerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if a parameter is neither scalar nor an array.
+     * It should throw an exception if a parameter is neither scalar nor an array
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Invalid parameter type
@@ -135,12 +142,12 @@ class TokenReplacerTest extends \PHPUnit_Framework_TestCase
         $this->tokenReplacer->replaceTokens(
             '{{ cell.barbar }}',
             null,
-            new \stdClass()
+            new \stdClass
         );
     }
 
     /**
-     * It should throw an exception if an array key does not exist.
+     * It should throw an exception if an array key does not exist
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Key "barbar" not present in value

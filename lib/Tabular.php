@@ -28,11 +28,17 @@ class Tabular
         $this->formatter = $formatter;
     }
 
-    public function tabulate(\DOMDocument $sourceDom, array $definition)
+    public function tabulate(\DOMDocument $sourceDom, array $definition, array $parameters = array())
     {
         $this->validateDefinition($definition);
 
-        $tableDom = $this->tableBuilder->buildTable($sourceDom, $definition['rows']);
+        if (isset($definition['params'])) {
+            $parameters = array_merge(
+                $definition['params'], $parameters
+            );
+        }
+
+        $tableDom = $this->tableBuilder->buildTable($sourceDom, $definition['rows'], $parameters);
 
         if (isset($definition['sort'])) {
             Sort::sortTable($tableDom, $definition['sort']);

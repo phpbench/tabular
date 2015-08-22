@@ -344,6 +344,53 @@ class TabularTest extends \PHPUnit_Framework_TestCase
         ), $result);
     }
 
+    /**
+     * It should allow parameterized definitions
+     */
+    public function testParameterized()
+    {
+        $result = $this->tabular->tabulate($this->document, array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        'one' => array(
+                            'literal' => '{{ param.foo }}',
+                        ),
+                    ),
+                ),
+            ),
+            'params' => array('foo' => 'bar'),
+        ));
+
+        $this->assertTable(array(
+            array('one' => 'bar'),
+        ), $result);
+    }
+
+    /**
+     * It should override default parameters
+     */
+    public function testParametersOverride()
+    {
+        $result = $this->tabular->tabulate($this->document, array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        'one' => array(
+                            'literal' => '{{ param.foo }}',
+                        ),
+                    ),
+                ),
+            ),
+            'params' => array('foo' => 'bar'),
+        ), array('foo' => 'baz'));
+
+        $this->assertTable(array(
+            array('one' => 'baz'),
+        ), $result);
+    }
+
+
     private function assertTable($expected, Document $result)
     {
         $results = array();

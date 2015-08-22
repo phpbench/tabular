@@ -80,6 +80,10 @@
                     }
                 }
             }
+        },
+        "params": {
+            "type": "object",
+            "description": "Parameter for this table"
         }
     }
 }

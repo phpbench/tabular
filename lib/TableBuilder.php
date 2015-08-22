@@ -33,9 +33,13 @@ class TableBuilder
      * Transform the source DOM into a series of row elements according
      * to the row definitions.
      *
+     * @param \DOMDocument $sourceDom
+     * @param array $rowDefinitions
+     * @param array $parameters
+     *
      * @return Document
      */
-    public function buildTable(\DOMDocument $sourceDom, array $rowDefinitions)
+    public function buildTable(\DOMDocument $sourceDom, array $rowDefinitions, array $parameters = array())
     {
         $tableDom = new Document();
         $sourceXpath = new XPath($sourceDom);
@@ -44,27 +48,13 @@ class TableBuilder
 
         $tableEl = $tableDom->createRoot('table');
         $tableInfo = $this->getTableInfo($rowDefinitions);
-        $this->iterateRowDefinitions($tableInfo, $tableEl, $sourceXpath, $rowDefinitions);
+        $this->iterateRowDefinitions($tableInfo, $tableEl, $sourceXpath, $rowDefinitions, $parameters);
         $this->executePasses($tableInfo, $tableEl);
 
         return $tableDom;
     }
 
-    private function executePasses(TableInfo $tableInfo, Element $tableEl)
-    {
-        foreach ($tableInfo->passes as $pass) {
-            $passCellEls = $tableEl->ownerDocument->xpath()->query('//cell[@pass="' . $pass . '"]');
-
-            foreach ($passCellEls as $passCellEl) {
-                $rowEls = $tableEl->ownerDocument->xpath()->query('ancestor::row', $passCellEl);
-                $rowEl = $rowEls->item(0);
-                $value = $tableEl->ownerDocument->xpath()->evaluate($passCellEl->nodeValue, $rowEl);
-                $passCellEl->nodeValue = $value;
-            }
-        }
-    }
-
-    private function iterateRowDefinitions(TableInfo $tableInfo, Element $tableEl, XPath $sourceXpath, $rowDefinitions)
+    private function iterateRowDefinitions(TableInfo $tableInfo, Element $tableEl, XPath $sourceXpath, $rowDefinitions, array $parameters)
     {
         foreach ($rowDefinitions as $rowDefinition) {
             $selector = '/';
@@ -128,7 +118,7 @@ class TableBuilder
                         }
 
                         if (isset($cellDefinition['class'])) {
-                            $class = $this->tokenReplacer->replaceTokens($cellDefinition['class'], $rowItem, $cellItem);
+                            $class = $this->tokenReplacer->replaceTokens($cellDefinition['class'], $rowItem, $cellItem, $parameters);
                             if ($class) {
                                 $cellEl->setAttribute('class', $class);
                             }
@@ -136,7 +126,7 @@ class TableBuilder
 
                         if (isset($cellDefinition['expr'])) {
                             $expr = $cellDefinition['expr'];
-                            $expr = $this->tokenReplacer->replaceTokens($expr, $rowItem, $cellItem);
+                            $expr = $this->tokenReplacer->replaceTokens($expr, $rowItem, $cellItem, $parameters);
                             $expr = $this->xpathResolver->replaceFunctions($expr);
 
                             if (null === $pass) {
@@ -147,7 +137,7 @@ class TableBuilder
                         }
 
                         if (array_key_exists('literal', $cellDefinition)) {
-                            $value = $this->tokenReplacer->replaceTokens($cellDefinition['literal'], $rowItem, $cellItem);
+                            $value = $this->tokenReplacer->replaceTokens($cellDefinition['literal'], $rowItem, $cellItem, $parameters);
                         }
 
                         $cellEl->nodeValue = $value;
@@ -195,5 +185,19 @@ class TableBuilder
         $tableInfo->passes = $passes;
 
         return $tableInfo;
+    }
+
+    private function executePasses(TableInfo $tableInfo, Element $tableEl)
+    {
+        foreach ($tableInfo->passes as $pass) {
+            $passCellEls = $tableEl->ownerDocument->xpath()->query('//cell[@pass="' . $pass . '"]');
+
+            foreach ($passCellEls as $passCellEl) {
+                $rowEls = $tableEl->ownerDocument->xpath()->query('ancestor::row', $passCellEl);
+                $rowEl = $rowEls->item(0);
+                $value = $tableEl->ownerDocument->xpath()->evaluate($passCellEl->nodeValue, $rowEl);
+                $passCellEl->nodeValue = $value;
+            }
+        }
     }
 }
