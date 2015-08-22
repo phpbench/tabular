@@ -60,7 +60,7 @@ class TableBuilder
             $selector = '/';
 
             if (isset($rowDefinition['with_query'])) {
-                $selector = $rowDefinition['with_query'];
+                $selector = $this->tokenReplacer->replaceTokens($rowDefinition['with_query'], null, null, $parameters);
             }
 
             $selector = $this->xpathResolver->replaceFunctions($selector);
