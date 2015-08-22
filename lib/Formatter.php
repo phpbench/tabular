@@ -27,6 +27,7 @@ class Formatter
 
     public function formatTable(Document $document)
     {
+        $document->formatOutput = true;
         $cellEls = $document->xpath()->query('//cell[@class]');
 
         foreach ($cellEls as $cellEl) {
@@ -77,12 +78,8 @@ class Formatter
         $cellEl->nodeValue = $value;
     }
 
-    public function appendClassDefinition($class, $formatter, array $definition)
+    public function setClassDefinition($class, $formatterDefinitions)
     {
-        if (!isset($this->classDefinitions[$class])) {
-            $this->classDefinitions[$class] = array();
-        }
-
-        $this->classDefinitions[$class][] = array($formatter, $definition);
+        $this->classDefinitions[$class] = $formatterDefinitions;
     }
 }

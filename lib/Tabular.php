@@ -40,6 +40,7 @@ class Tabular
 
         if (isset($definition['classes'])) {
             foreach ($definition['classes'] as $class => $classDefinition) {
+                $formatters = array();
                 foreach ($classDefinition as $formatDefinition) {
                     $options = array();
                     if (count($formatDefinition) == 2) {
@@ -47,8 +48,11 @@ class Tabular
                     } else {
                         list($formatter) = $formatDefinition;
                     }
-                    $this->formatter->appendClassDefinition($class, $formatter, $options ?: array());
+
+                    $formatters[] = array($formatter, $options ?: array());
                 }
+
+                $this->formatter->setClassDefinition($class, $formatters);
             }
         }
 

@@ -43,15 +43,17 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
 EOT
         );
 
-        $this->formatter->appendClassDefinition(
+        $this->formatter->setClassDefinition(
             'foo',
-            'printf',
-            array('format' => '%s')
+            array(
+                array('printf', array('format' => '%s'))
+            )
         );
-        $this->formatter->appendClassDefinition(
+        $this->formatter->setClassDefinition(
             'bar',
-            'printf',
-            array('format' => '%s')
+            array(
+                array('printf', array('format' => '%s'))
+            )
         );
         $this->format->getDefaultOptions()->willReturn(array('format' => 'xx'));
         $this->format->format('bar', array('format' => '%s'))->willReturn('hello');
@@ -103,10 +105,11 @@ EOT
 EOT
         );
 
-        $this->formatter->appendClassDefinition(
+        $this->formatter->setClassDefinition(
             'foo',
-            'printf',
-            array('foo' => 'x', 'bar' => 'y')
+            array(
+                array('printf', array('foo' => 'x', 'bar' => 'y'))
+            )
         );
         $this->format->getDefaultOptions()->willReturn(array('boo' => 'baz', 'baz' => 'boo'));
         $this->registry->get('printf')->willReturn($this->format->reveal());

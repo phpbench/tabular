@@ -17,6 +17,12 @@ class NumberFormat implements FormatInterface
 {
     public function format($subject, array $options)
     {
+        if (!is_numeric($subject)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Non-numeric value encountered: "%s"',
+                print_r($subject, true)
+            ));
+        }
         return number_format($subject, $options['decimal_places'], $options['decimal_point'], $options['thousands_separator']);
     }
 

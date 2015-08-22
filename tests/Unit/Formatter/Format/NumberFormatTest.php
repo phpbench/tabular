@@ -30,4 +30,15 @@ class NumberFormatTest extends \PHPUnit_Framework_TestCase
         $result = $this->format->format(1000000, $this->format->getDefaultOptions());
         $this->assertEquals('1,000,000', $result);
     }
+
+    /**
+     * It should throw an exception if passed a non-numeric value
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Non-numeric value
+     */
+    public function testNonNumeric()
+    {
+        $this->format->format('hello', $this->format->getDefaultOptions());
+    }
 }
