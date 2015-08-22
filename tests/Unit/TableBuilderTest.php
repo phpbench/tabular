@@ -40,10 +40,12 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
         $result = $this->rowBuilder->buildTable($this->document, array(
             array(
                 'cells' => array(
-                    'time' => array(
+                    array(
+                        'name' => 'time',
                         'expr' => 'sum(//iteration/@time)',
                     ),
-                    'memory' => array(
+                    array(
+                        'name' => 'memory',
                         'expr' => 'sum(//iteration/@memory)',
                     ),
                 ),
@@ -66,10 +68,12 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
         $result = $this->rowBuilder->buildTable($this->document, array(
             'one' => array(
                 'cells' => array(
-                    'time' => array(
+                    array(
+                        'name' => 'time',
                         'expr' => 'sum(.//iteration/@time)',
                     ),
-                    'memory' => array(
+                    array(
+                        'name' => 'memory',
                         'expr' => 'sum(.//iteration/@memory)',
                     ),
                 ),
@@ -98,10 +102,12 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
             'one' => array(
                 'group' => 'one',
                 'cells' => array(
-                    'time' => array(
+                    array(
+                        'name' => 'time',
                         'expr' => 'sum(.//iteration/@time)',
                     ),
-                    'memory' => array(
+                    array(
+                        'name' => 'memory',
                         'expr' => 'sum(.//iteration/@memory)',
                     ),
                 ),
@@ -109,10 +115,12 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
             'two' => array(
                 'group' => 'two',
                 'cells' => array(
-                    'time' => array(
+                    array(
+                        'name' => 'time',
                         'expr' => 'sum(.//iteration/@time)',
                     ),
-                    'memory' => array(
+                    array(
+                        'name' => 'memory',
                         'expr' => 'sum(.//iteration/@memory)',
                     ),
                 ),
@@ -131,7 +139,8 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
         $result = $this->rowBuilder->buildTable($this->document, array(
             'one' => array(
                 'cells' => array(
-                    'one' => array(
+                    array(
+                        'name' => 'one',
                         'literal' => 'Helli',
                     ),
                 ),
@@ -152,7 +161,8 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
             array(
                 'group' => 'one',
                 'cells' => array(
-                    'param' => array(
+                    array(
+                        'name' => 'param',
                         'literal' => '{{ row.item }}',
                     ),
                 ),
@@ -176,7 +186,8 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
             array(
                 'group' => 'one',
                 'cells' => array(
-                    'cell_{{ cell.item }}' => array(
+                    array(
+                        'name' => 'cell_{{ cell.item }}',
                         'literal' => '{{ cell.item }}',
                         'with_items' => array('one', 'two'),
                     ),

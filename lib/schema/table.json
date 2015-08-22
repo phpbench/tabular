@@ -13,12 +13,15 @@
                         "type": "string"
                     },
                     "cells": {
-                        "type": "object",
+                        "type": "array",
                         "description": "Cell definitions for row",
                         "items": {
                             "type": "object",
                             "additionalProperties": false,
                             "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
                                 "pass": {
                                     "type": "integer",
                                     "description": "Pass on which to evaluate this cell"
@@ -28,7 +31,10 @@
                                     "description": "XPath expression to evaluate for cell value"
                                 },
                                 "literal": {
-                                    "type": "string",
+                                    "oneOf": [
+                                        { "type": "string" },
+                                        { "type": "integer" }
+                                    ],
                                     "description": "Literal value"
                                 },
                                 "class": {
@@ -38,7 +44,8 @@
                                     "type": "array",
                                     "description": "Iterate the cell definition with the given values"
                                 }
-                            }
+                            },
+                            "required": ["name"]
                         }
                     },
                     "with_items": {

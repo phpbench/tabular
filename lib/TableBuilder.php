@@ -59,12 +59,6 @@ class TableBuilder
         foreach ($rowDefinitions as $rowDefinition) {
             $selector = '/';
 
-            if (isset($rowDefinition['with_query'])) {
-                $selector = $this->tokenReplacer->replaceTokens($rowDefinition['with_query'], null, null, $parameters);
-            }
-
-            $selector = $this->xpathResolver->replaceFunctions($selector);
-
             $rowItems = array(null);
 
             if (isset($rowDefinition['with_items'])) {
@@ -72,6 +66,12 @@ class TableBuilder
             }
 
             foreach ($rowItems as $rowItem) {
+                if (isset($rowDefinition['with_query'])) {
+                    $selector = $this->tokenReplacer->replaceTokens($rowDefinition['with_query'], $rowItem, null, $parameters);
+                }
+
+                $selector = $this->xpathResolver->replaceFunctions($selector);
+
                 foreach ($sourceXpath->query($selector) as $sourceEl) {
                     if (isset($rowDefinition['group'])) {
                         $group = $rowDefinition['group'];
@@ -94,13 +94,7 @@ class TableBuilder
                         $cellEl = $rowEl->appendElement('cell');
                         $cellEl->setAttribute('name', $columnName);
 
-                        $definitionName = isset($rowDefinition['cells'][$column->originalName]) ? $column->originalName : $column->name;
-
-                        if (!isset($rowDefinition['cells'][$definitionName])) {
-                            continue;
-                        }
-
-                        $cellDefinition = $rowDefinition['cells'][$definitionName];
+                        $cellDefinition = $rowDefinition['cells'][$column->definitionIndex];
 
                         $pass = null;
                         if (isset($cellDefinition['pass'])) {
@@ -159,7 +153,8 @@ class TableBuilder
                 $groups[$rowDefinition['group']] = true;
             }
 
-            foreach ($rowDefinition['cells'] as $cellName => $cellDefinition) {
+            foreach ($rowDefinition['cells'] as $definitionIndex => $cellDefinition) {
+                $cellName = $cellDefinition['name'];
                 $cellItems = array(null);
                 if (isset($cellDefinition['with_items'])) {
                     $cellItems = $cellDefinition['with_items'];
@@ -173,6 +168,7 @@ class TableBuilder
                     $column = new ColumnInfo();
                     $column->itemIndex = $paramIndex;
                     $column->originalName = $cellName;
+                    $column->definitionIndex = $definitionIndex;
                     $evaledCellName = $this->tokenReplacer->replaceTokens($cellName, null, $cellItem);
                     $column->name = $evaledCellName;
                     $columns[$evaledCellName] = $column;

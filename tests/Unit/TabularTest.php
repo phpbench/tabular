@@ -53,10 +53,12 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'time' => array(
+                        array(
+                            'name' => 'time',
                             'expr' => 'sum(//iteration/@time)',
                         ),
-                        'memory' => array(
+                        array(
+                            'name' => 'memory',
                             'expr' => 'sum(//iteration/@memory)',
                         ),
                     ),
@@ -98,10 +100,12 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'time' => array(
+                        array(
+                            'name' => 'time',
                             'expr' => 'sum(.//iteration/@time)',
                         ),
-                        'memory' => array(
+                        array(
+                            'name' => 'memory',
                             'expr' => 'sum(.//iteration/@memory)',
                         ),
                     ),
@@ -132,10 +136,12 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                 array(
                     'group' => 'one',
                     'cells' => array(
-                        'time' => array(
+                        array(
+                            'name' => 'time',
                             'expr' => 'sum(.//iteration/@time)',
                         ),
-                        'memory' => array(
+                        array(
+                            'name' => 'memory',
                             'expr' => 'sum(.//iteration/@memory)',
                         ),
                     ),
@@ -143,10 +149,12 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                 array(
                     'group' => 'two',
                     'cells' => array(
-                        'time' => array(
+                        array(
+                            'name' => 'time',
                             'expr' => 'sum(.//iteration/@time)',
                         ),
-                        'memory' => array(
+                        array(
+                            'name' => 'memory',
                             'expr' => 'sum(.//iteration/@memory)',
                         ),
                     ),
@@ -167,7 +175,8 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'one' => array(
+                        array(
+                            'name' => 'one',
                             'literal' => 'Helli',
                         ),
                     ),
@@ -190,7 +199,8 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                 array(
                     'group' => 'one',
                     'cells' => array(
-                        'param' => array(
+                        array(
+                            'name' => 'param',
                             'literal' => '{{ row.item }}',
                         ),
                     ),
@@ -216,7 +226,8 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                 array(
                     'group' => 'one',
                     'cells' => array(
-                        'cell_{{ cell.item }}' => array(
+                        array(
+                            'name' => 'cell_{{ cell.item }}',
                             'literal' => '{{ cell.item }}',
                             'with_items' => array('one', 'two'),
                         ),
@@ -239,14 +250,16 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'one' => array(
+                        array(
+                            'name' => 'one',
                             'literal' => 'ccc',
                         ),
                     ),
                 ),
                 array(
                     'cells' => array(
-                        'one' => array(
+                        array(
+                            'name' => 'one',
                             'literal' => 'aaa',
                         ),
                     ),
@@ -272,7 +285,8 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'one' => array(
+                        array(
+                            'name' => 'one',
                             'class' => 'percent',
                             'literal' => '100',
                         ),
@@ -301,7 +315,8 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'one' => array(
+                        array(
+                            'name' => 'one',
                             'expr' => 'string(hello())',
                         ),
                     ),
@@ -323,14 +338,17 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'one' => array(
+                        array(
+                            'name' => 'one',
                             'literal' => 5,
                         ),
-                        'three' => array(
+                        array(
+                            'name' => 'three',
                             'pass' => 10,
                             'expr' => 'sum(//cell[@name="two"]) + 1',
                         ),
-                        'two' => array(
+                        array(
+                            'name' => 'two',
                             'pass' => 5,
                             'expr' => 'sum(//cell[@name="one"])',
                         ),
@@ -353,7 +371,8 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'one' => array(
+                        array(
+                            'name' => 'one',
                             'literal' => '{{ param.foo }}',
                         ),
                     ),
@@ -376,7 +395,8 @@ class TabularTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        'one' => array(
+                        array(
+                            'name' => 'one',
                             'literal' => '{{ param.foo }}',
                         ),
                     ),
