@@ -1,0 +1,12 @@
+{
+    "rows": [
+        {
+            "cells": [
+                {
+                    "name": "foo",
+                    "literal": "bar"
+                }
+            ]
+        }
+    ]
+}

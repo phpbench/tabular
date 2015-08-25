@@ -12,6 +12,7 @@
 namespace PhpBench\Tabular;
 
 use JsonSchema\Validator;
+use PhpBench\Tabular\Definition;
 
 class Tabular
 {
@@ -28,8 +29,9 @@ class Tabular
         $this->formatter = $formatter;
     }
 
-    public function tabulate(\DOMDocument $sourceDom, array $definition, array $parameters = array())
+    public function tabulate(\DOMDocument $sourceDom, $definition, array $parameters = array())
     {
+        $definition = $this->getDefinition($definition);
         $this->validateDefinition($definition);
 
         if (isset($definition['params'])) {
@@ -67,7 +69,44 @@ class Tabular
         return $tableDom;
     }
 
-    private function validateDefinition(array $definition)
+    private function getDefinition($definition)
+    {
+        if ($definition instanceof Definition) {
+            return $definition;
+        }
+
+        if (is_array($definition)) {
+            return new Definition($definition);
+        }
+
+        if (!is_string($definition)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Invalid definition type "%s"',
+                is_object($definition) ? get_class($definition) : gettype($definition)
+            ));
+        }
+
+        if (!file_exists($definition)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Definition file "%s" does not exist.',
+                $definition
+            ));
+        }
+
+        $filePath = $definition;
+        $definition = json_decode(file_get_contents($filePath), true);
+
+        if (null === $definition) {
+            throw new \RuntimeException(sprintf(
+                'Could not decode JSON file "%s"',
+                $filePath
+            ));
+        }
+
+        return new Definition($definition, $filePath);
+    }
+
+    private function validateDefinition(Definition $definition)
     {
         $definition = json_decode(json_encode($definition));
         $this->validator->check($definition, json_decode(file_get_contents(__DIR__ . '/schema/table.json')));

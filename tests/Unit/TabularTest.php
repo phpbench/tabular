@@ -19,6 +19,7 @@ use PhpBench\Tabular\Formatter\Format\PrintfFormat;
 use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
 use PhpBench\Tabular\TableBuilder;
 use PhpBench\Tabular\Tabular;
+use PhpBench\Tabular\Definition;
 
 class TabularTest extends \PHPUnit_Framework_TestCase
 {
@@ -410,6 +411,73 @@ class TabularTest extends \PHPUnit_Framework_TestCase
         ), $result);
     }
 
+    /**
+     * It should accept Definition classes
+     */
+    public function testAcceptDefinitionClasses()
+    {
+        $result = $this->tabular->tabulate($this->document, new Definition(array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        array(
+                            'name' => 'one',
+                            'literal' => 'two',
+                        ),
+                    ),
+                ),
+            ),
+        )));
+
+        $this->assertTable(array(
+            array('one' => 'two'),
+        ), $result);
+    }
+
+    /**
+     * It should accept file names of definition files
+     */
+    public function testAcceptFileNames()
+    {
+        $result = $this->tabular->tabulate($this->document, __DIR__ . '/fixtures/definition.json');
+
+        $this->assertTable(array(
+            array('foo' => 'bar'),
+        ), $result);
+    }
+
+    /**
+     * It should throw an exception if the definition file does not exist.
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage does not exist
+     */
+    public function testAcceptFileNameNotExist()
+    {
+        $this->tabular->tabulate($this->document, __DIR__ . '/fixtures/definition_not_exist.json');
+    }
+
+    /**
+     * It should throw an exception if an unsupported type is passed as a definition
+     *
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Invalid definition
+     */
+    public function testDefinitionInvalidType()
+    {
+        $this->tabular->tabulate($this->document, new \stdClass);
+    }
+
+    /**
+     * It should throw an exception if a file contains invalid JSON
+     *
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Could not decode
+     */
+    public function testAcceptFileNameNotValidJson()
+    {
+        $this->tabular->tabulate($this->document, __DIR__ . '/fixtures/definition_invalid.json');
+    }
 
     private function assertTable($expected, Document $result)
     {
