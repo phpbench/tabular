@@ -1,0 +1,11 @@
+{
+    "includes": [
+        ["_include1.json", ["classes"]],
+        ["_include2.json", []]
+    ],
+    "classes": {
+        "foo": [
+            ["printf"]
+        ]
+    }
+}

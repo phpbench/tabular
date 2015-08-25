@@ -91,6 +91,27 @@
         "params": {
             "type": "object",
             "description": "Parameter for this table"
+        },
+        "includes": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "string",
+                        "description": "The filename (relative or absolute) to include/merge"
+                    },
+                    {
+                        "type": "array",
+                        "description": "List of keys to import from the JSON file",
+                        "items": {
+                            "type": "string",
+                            "enum": [ "classes", "params", "rows", "sort" ]
+                        }
+                    }
+                ]
+            }
         }
-    }
+    },
+    "required": ["rows"]
 }

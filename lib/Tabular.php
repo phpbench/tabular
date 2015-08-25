@@ -13,26 +13,53 @@ namespace PhpBench\Tabular;
 
 use JsonSchema\Validator;
 use PhpBench\Tabular\Definition;
+use PhpBench\Tabular\Dom\Document;
 
 class Tabular
 {
     const DEFAULT_GROUP = '_default';
 
-    private $validator;
+    /**
+     * @Var DefinitionLoader
+     */
+    private $definitionLoader;
+
+    /**
+     * @var TableBuilder
+     */
     private $tableBuilder;
+
+    /**
+     * @var Formatter
+     */
     private $formatter;
 
-    public function __construct(TableBuilder $tableBuilder, Validator $validator, Formatter $formatter)
+    /**
+     * @param TableBuilder $tableBuilder
+     * @param Validator $validator
+     * @param Formatter $formatter
+     */
+    public function __construct(TableBuilder $tableBuilder, DefinitionLoader $definitionLoader, Formatter $formatter)
     {
-        $this->validator = $validator;
+        $this->definitionLoader = $definitionLoader;
         $this->tableBuilder = $tableBuilder;
         $this->formatter = $formatter;
     }
 
+    /**
+     * Process the source document using the given Tabular definition and return a table document.
+     *
+     * The definition can be passed either as an array, a Defintion class or a file name.
+     *
+     * @param \DOMDocument $sourceDom
+     * @param array|string|Definition $definition
+     * @param array $parameters
+     *
+     * @return Document
+     */
     public function tabulate(\DOMDocument $sourceDom, $definition, array $parameters = array())
     {
-        $definition = $this->getDefinition($definition);
-        $this->validateDefinition($definition);
+        $definition = $this->definitionLoader->load($definition);
 
         if (isset($definition['params'])) {
             $parameters = array_merge(
@@ -69,58 +96,4 @@ class Tabular
         return $tableDom;
     }
 
-    private function getDefinition($definition)
-    {
-        if ($definition instanceof Definition) {
-            return $definition;
-        }
-
-        if (is_array($definition)) {
-            return new Definition($definition);
-        }
-
-        if (!is_string($definition)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Invalid definition type "%s"',
-                is_object($definition) ? get_class($definition) : gettype($definition)
-            ));
-        }
-
-        if (!file_exists($definition)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Definition file "%s" does not exist.',
-                $definition
-            ));
-        }
-
-        $filePath = $definition;
-        $definition = json_decode(file_get_contents($filePath), true);
-
-        if (null === $definition) {
-            throw new \RuntimeException(sprintf(
-                'Could not decode JSON file "%s"',
-                $filePath
-            ));
-        }
-
-        return new Definition($definition, $filePath);
-    }
-
-    private function validateDefinition(Definition $definition)
-    {
-        $definition = json_decode(json_encode($definition));
-        $this->validator->check($definition, json_decode(file_get_contents(__DIR__ . '/schema/table.json')));
-
-        if (!$this->validator->isValid()) {
-            $errorString = array();
-            foreach ($this->validator->getErrors() as $error) {
-                $errorString[] = sprintf('[%s] %s', $error['property'], $error['message']);
-            }
-
-            throw new \InvalidArgumentException(sprintf(
-                'Invalid table definition: %s%s',
-                PHP_EOL . PHP_EOL, implode(PHP_EOL, $errorString)
-            ));
-        }
-    }
 }
