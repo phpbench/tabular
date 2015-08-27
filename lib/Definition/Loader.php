@@ -1,20 +1,28 @@
 <?php
 
-namespace PhpBench\Tabular;
+namespace PhpBench\Tabular\Definition;
 
 use JsonSchema\Validator;
 use PhpBench\Tabular\Definition;
+use PhpBench\Tabular\TokenReplacer;
+use PhpBench\Tabular\PathUtil;
 
-class DefinitionLoader
+class Loader
 {
     /**
      * @var Validator
      */
     private $validator;
 
-    public function __construct(Validator $validator = null)
+    /**
+     * @var TokenReplacer
+     */
+    private $tokenReplacer;
+
+    public function __construct(Validator $validator = null, TokenReplacer $tokenReplacer = null)
     {
         $this->validator = $validator ?: new Validator();
+        $this->tokenReplacer = $tokenReplacer ?: new TokenReplacer();
     }
 
     public function load($definition)
@@ -22,6 +30,7 @@ class DefinitionLoader
         $definition = $this->normalizeDefinition($definition);
 
         $this->processDefinitionIncludes($definition);
+        $this->processMetadata($definition);
         $this->validateDefinition($definition);
 
         return $definition;
@@ -48,6 +57,36 @@ class DefinitionLoader
         return new Definition($definitionArray, $definition);
     }
 
+    private function processMetadata(Definition $definition)
+    {
+        $columns = array();
+        $passes = array();
+
+        foreach ($definition['rows'] as $rowDefinition) {
+            foreach ($rowDefinition['cells'] as $cellDefinition) {
+                $cellName = $cellDefinition['name'];
+
+                if (isset($cellDefinition['pass'])) {
+                    $passes[] = $cellDefinition['pass'];
+                }
+
+                $cellItems = array(null);
+                if (isset($cellDefinition['with_items'])) {
+                    $cellItems = $cellDefinition['with_items'];
+                }
+
+                foreach ($cellItems as $cellItem) {
+                    $evaledCellName = $this->tokenReplacer->replaceTokens($cellName, null, $cellItem);
+                    $columns[] = $evaledCellName;
+                }
+            }
+        }
+
+        sort($passes);
+
+        $definition->setMetadata($columns, $passes);
+    }
+
     private function loadDefinition($filePath)
     {
         if (!file_exists($filePath)) {
@@ -72,7 +111,7 @@ class DefinitionLoader
     private function validateDefinition(Definition $definition)
     {
         $definition = json_decode(json_encode($definition));
-        $this->validator->check($definition, json_decode(file_get_contents(__DIR__ . '/schema/table.json')));
+        $this->validator->check($definition, json_decode(file_get_contents(__DIR__ . '/../schema/table.json')));
 
         if (!$this->validator->isValid()) {
             $errorString = array();

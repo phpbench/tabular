@@ -200,6 +200,74 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
         ), $result);
     }
 
+    /**
+     * It should allow compiler passes.
+     */
+    public function testCompilerPass()
+    {
+        $result = $this->rowBuilder->buildTable($this->document, array(
+            array(
+                'cells' => array(
+                    array(
+                        'name' => 'one',
+                        'literal' => 5,
+                    ),
+                    array(
+                        'name' => 'three',
+                        'pass' => 10,
+                        'expr' => 'sum(//cell[@name="two"]) + 1',
+                    ),
+                    array(
+                        'name' => 'two',
+                        'pass' => 5,
+                        'expr' => 'sum(//cell[@name="one"])',
+                    ),
+                ),
+            ),
+        ));
+
+        $this->assertTable(array(
+            array('one' => '5', 'two' => '5', 'three' => '6'),
+        ), $result);
+    }
+
+    /**
+     * It should perform compiler passes with multiple rows
+     */
+    public function testCompilerPassMultipleRows()
+    {
+        $result = $this->rowBuilder->buildTable($this->document, array(
+            array(
+                'cells' => array(
+                    array(
+                        'name' => 'one',
+                        'literal' => 5,
+                    ),
+                ),
+            ),
+            array(
+                'group' => 'footer',
+                'cells' => array(
+                    array(
+                        'name' => 'three',
+                        'pass' => 10,
+                        'expr' => 'sum(//group[@name="footer"]//cell[@name="two"]) + 1',
+                    ),
+                    array(
+                        'name' => 'two',
+                        'pass' => 5,
+                        'expr' => 'sum(//group[@name="_default"]//cell[@name="one"])',
+                    ),
+                ),
+            ),
+        ));
+
+        $this->assertTable(array(
+            array('one' => '5', 'two' => '', 'three' => ''),
+            array('one' => '', 'two' => '5', 'three' => '6'),
+        ), $result);
+    }
+
     private function assertTable($expected, Document $result)
     {
         $results = array();
@@ -210,6 +278,8 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
             }
             $results[] = $row;
         }
+
+        var_dump($results);die();;
 
         $this->assertEquals($expected, $results);
     }

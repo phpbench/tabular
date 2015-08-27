@@ -67,7 +67,7 @@ class Tabular
             );
         }
 
-        $tableDom = $this->tableBuilder->buildTable($sourceDom, $definition['rows'], $parameters);
+        $tableDom = $this->tableBuilder->buildTable($sourceDom, $definition, $parameters);
 
         if (isset($definition['sort'])) {
             Sort::sortTable($tableDom, $definition['sort']);
