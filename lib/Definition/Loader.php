@@ -16,6 +16,10 @@ use PhpBench\Tabular\Definition;
 use PhpBench\Tabular\PathUtil;
 use PhpBench\Tabular\TokenReplacer;
 
+/**
+ * Loads the table definition, processes any includes and determines
+ * meta information such as the number of columns and the compiler pass numbers.
+ */
 class Loader
 {
     /**
@@ -28,12 +32,26 @@ class Loader
      */
     private $tokenReplacer;
 
+    /**
+     * @param Validator $validator
+     * @param TokenReplacer $tokenReplacer
+     */
     public function __construct(Validator $validator = null, TokenReplacer $tokenReplacer = null)
     {
         $this->validator = $validator ?: new Validator();
         $this->tokenReplacer = $tokenReplacer ?: new TokenReplacer();
     }
 
+    /**
+     * Load the definition.
+     *
+     * $definition can be a file name, an array or a Definition class.
+     *
+     * Note that in order for relative file includes to work either a filename
+     * or a Definition instance with the configured basepath must be given.
+     *
+     * @param mixed $definition
+     */
     public function load($definition)
     {
         $definition = $this->normalizeDefinition($definition);
@@ -45,6 +63,12 @@ class Loader
         return $definition;
     }
 
+    /**
+     * Normalize the definition to a Definition class
+     *
+     * @param mixed $definition
+     * @return Definition
+     */
     private function normalizeDefinition($definition)
     {
         if ($definition instanceof Definition) {
@@ -67,6 +91,12 @@ class Loader
         return new Definition($definitionArray, $definition);
     }
 
+    /**
+     * Iterate over the definition and determine the number of columns and compiler
+     * passes.
+     *
+     * @param Definition
+     */
     private function processMetadata(Definition $definition)
     {
         $columns = array();
@@ -97,6 +127,12 @@ class Loader
         $definition->setMetadata($columns, $passes);
     }
 
+    /**
+     * Load the definition data from a file.
+     *
+     * @param string $filePath
+     * @return array
+     */
     private function loadDefinition($filePath)
     {
         if (!file_exists($filePath)) {
@@ -118,6 +154,11 @@ class Loader
         return $definition;
     }
 
+    /**
+     * Validate the definition file.
+     *
+     * @param Definition
+     */
     private function validateDefinition(Definition $definition)
     {
         $definition = json_decode(json_encode($definition));
@@ -138,6 +179,8 @@ class Loader
 
     /**
      * Merge any included definitions.
+     *
+     * @param Definition
      */
     private function processDefinitionIncludes(Definition $definition)
     {

@@ -14,15 +14,31 @@ namespace PhpBench\Tabular\Definition;
 use PhpBench\Tabular\Definition;
 use PhpBench\Tabular\TokenReplacer;
 
+/**
+ * Expands the definition as far as is possible. All tokens are replaced
+ * and additional rows are added according to the row definitions `with_items` key.
+ */
 class Expander
 {
+    /**
+     * @var TokenReplacer
+     */
     private $tokenReplacer;
 
+    /**
+     * @param TokenReplacer $tokenReplacer
+     */
     public function __construct(TokenReplacer $tokenReplacer = null)
     {
         $this->tokenReplacer = $tokenReplacer ?: new TokenReplacer();
     }
 
+    /**
+     * Expand the defintion by reference.
+     *
+     * @param Definition $definition
+     * @param array $parameters
+     */
     public function expand(Definition $definition, array $parameters = array())
     {
         $expRows = array();
