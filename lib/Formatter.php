@@ -14,15 +14,16 @@ namespace PhpBench\Tabular;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Formatter\RegistryInterface;
+use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
 
 class Formatter
 {
     private $registry;
     private $classDefinitions = array();
 
-    public function __construct(RegistryInterface $registry)
+    public function __construct(RegistryInterface $registry = null)
     {
-        $this->registry = $registry;
+        $this->registry = $registry ?: new ArrayRegistry();
     }
 
     public function formatTable(Document $document)

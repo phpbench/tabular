@@ -11,6 +11,8 @@
 
 namespace PhpBench\Tabular\Dom;
 
+require_once(__DIR__ . '/functions.php');
+
 class XPathResolver
 {
     private $functions = array();
@@ -48,6 +50,7 @@ class XPathResolver
     {
         $xpath->registerNamespace('php', 'http://php.net/xpath');
         $xpath->registerPhpFunctions(array_values($this->functions));
+        $this->registerDefaultFunctions();
     }
 
     public function registerFunction($name, $fqn)
@@ -87,4 +90,14 @@ class XPathResolver
 
         return $xpathQuery;
     }
+
+    private function registerDefaultFunctions()
+    {
+        $this->registerFunction('average', 'PhpBench\Tabular\Dom\functions\mean');
+        $this->registerFunction('deviation', 'PhpBench\Tabular\Dom\functions\deviation');
+        $this->registerFunction('min', 'PhpBench\Tabular\Dom\functions\min');
+        $this->registerFunction('max', 'PhpBench\Tabular\Dom\functions\max');
+        $this->registerFunction('median', 'PhpBench\Tabular\Dom\functions\median');
+    }
+
 }

@@ -118,14 +118,14 @@ class Loader
 
                 foreach ($cellItems as $cellItem) {
                     $evaledCellName = $this->tokenReplacer->replaceTokens($cellName, null, $cellItem);
-                    $columns[] = $evaledCellName;
+                    $columns[$evaledCellName] = $evaledCellName;
                 }
             }
         }
 
         sort($passes);
 
-        $definition->setMetadata($columns, $passes);
+        $definition->setMetadata(array_values($columns), $passes);
     }
 
     /**

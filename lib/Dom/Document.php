@@ -36,4 +36,33 @@ class Document extends \DOMDocument
 
         return $this->xpath;
     }
+
+
+    public function toArray($group = null)
+    {
+        $selector = '//row';
+
+        if ($group) {
+            $selector = '//group[@name="' . $group . '"]/row';
+        }
+
+        $rows = array();
+        foreach ($this->xpath()->query($selector) as $rowEl) {
+            $row = array();
+            foreach ($this->xpath()->query('.//cell', $rowEl) as $cellEl) {
+                $colName = $cellEl->getAttribute('name');
+
+                // exclude cells
+                if (isset($config['exclude']) && in_array($colName, $config['exclude'])) {
+                    continue;
+                }
+
+                $row[$colName] = $cellEl->nodeValue;
+            }
+
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
 }
