@@ -15,6 +15,7 @@ use JsonSchema\Validator;
 use PhpBench\Tabular\Definition;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Definition\Loader;
+use PhpBench\Tabular\Definition\Expander;
 
 class Tabular
 {
@@ -36,15 +37,21 @@ class Tabular
     private $formatter;
 
     /**
+     * @var Expander
+     */
+    private $expander;
+
+    /**
      * @param TableBuilder $tableBuilder
      * @param Validator $validator
      * @param Formatter $formatter
      */
-    public function __construct(TableBuilder $tableBuilder, Loader $definitionLoader, Formatter $formatter)
+    public function __construct(TableBuilder $tableBuilder, Loader $definitionLoader, Formatter $formatter, Expander $expander = null)
     {
         $this->definitionLoader = $definitionLoader;
         $this->tableBuilder = $tableBuilder;
         $this->formatter = $formatter;
+        $this->expander = $expander ?: new Expander();
     }
 
     /**
@@ -67,6 +74,8 @@ class Tabular
                 $definition['params'], $parameters
             );
         }
+
+        $this->expander->expand($definition, $parameters);
 
         $tableDom = $this->tableBuilder->buildTable($sourceDom, $definition, $parameters);
 
