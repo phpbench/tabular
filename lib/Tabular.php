@@ -15,9 +15,8 @@ use JsonSchema\Validator;
 use PhpBench\Tabular\Definition\Expander;
 use PhpBench\Tabular\Definition\Loader;
 use PhpBench\Tabular\Dom\TableDom;
-use PhpBench\Tabular\Formatter;
-use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
 use PhpBench\Tabular\Formatter\Format;
+use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
 
 class Tabular
 {
@@ -57,7 +56,7 @@ class Tabular
     }
 
     /**
-     * Return a new instance of tabular with a default configuration
+     * Return a new instance of tabular with a default configuration.
      *
      * @return Tabular
      */

@@ -11,8 +11,8 @@
 
 namespace PhpBench\Tabular;
 
-use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\Dom\Element;
+use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\Dom\XPath;
 use PhpBench\Tabular\Dom\XPathResolver;
 

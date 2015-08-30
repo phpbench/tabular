@@ -12,13 +12,7 @@
 namespace PhpBench\Tabular\Tests\Unit;
 
 use PhpBench\Tabular\Definition;
-use PhpBench\Tabular\Definition\Loader;
 use PhpBench\Tabular\Dom\TableDom;
-use PhpBench\Tabular\Dom\XPathResolver;
-use PhpBench\Tabular\Formatter;
-use PhpBench\Tabular\Formatter\Format\PrintfFormat;
-use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
-use PhpBench\Tabular\TableBuilder;
 use PhpBench\Tabular\Tabular;
 
 class TabularTest extends \PHPUnit_Framework_TestCase

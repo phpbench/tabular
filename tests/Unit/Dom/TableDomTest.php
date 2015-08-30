@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit\Dom;
 
 use PhpBench\Tabular\Dom\TableDom;
@@ -15,7 +24,7 @@ class TableDomTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should return a full array representation
+     * It should return a full array representation.
      */
     public function testToArray()
     {
@@ -37,7 +46,7 @@ class TableDomTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should return a specific group as an array
+     * It should return a specific group as an array.
      */
     public function testToArrayGroup()
     {

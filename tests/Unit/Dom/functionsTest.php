@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the PHP Bench package
+ * This file is part of the Tabular  package
  *
  * (c) Daniel Leech <daniel@dantleech.com>
  *

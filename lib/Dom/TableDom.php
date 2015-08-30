@@ -37,7 +37,6 @@ class TableDom extends \DOMDocument
         return $this->xpath;
     }
 
-
     public function toArray($group = null)
     {
         $selector = '//row';

@@ -11,7 +11,7 @@
 
 namespace PhpBench\Tabular\Dom;
 
-require_once(__DIR__ . '/functions.php');
+require_once __DIR__ . '/functions.php';
 
 class XPathResolver
 {
@@ -21,7 +21,7 @@ class XPathResolver
     private $functions = array();
 
     /**
-     * Reserved XPath function anmes
+     * Reserved XPath function anmes.
      *
      * IMMUTABLE!
      *
@@ -58,7 +58,7 @@ class XPathResolver
     );
 
     /**
-     * Register the default functions upon instantiation
+     * Register the default functions upon instantiation.
      */
     public function __construct()
     {
