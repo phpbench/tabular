@@ -45,11 +45,11 @@ class Tabular
      * @param Validator $validator
      * @param Formatter $formatter
      */
-    public function __construct(TableBuilder $tableBuilder, Loader $definitionLoader, Formatter $formatter, Expander $expander = null)
+    public function __construct(TableBuilder $tableBuilder = null, Loader $definitionLoader = null, Formatter $formatter = null, Expander $expander = null)
     {
-        $this->definitionLoader = $definitionLoader;
-        $this->tableBuilder = $tableBuilder;
-        $this->formatter = $formatter;
+        $this->definitionLoader = $definitionLoader ?: new Loader();
+        $this->tableBuilder = $tableBuilder ?: new TableBuilder();
+        $this->formatter = $formatter ?: new Formatter();
         $this->expander = $expander ?: new Expander();
     }
 

@@ -23,9 +23,9 @@ class TableBuilder
     private $xpathResolver;
     private $tokenReplacer;
 
-    public function __construct(XPathResolver $xpathResolver)
+    public function __construct(XPathResolver $xpathResolver = null)
     {
-        $this->xpathResolver = $xpathResolver;
+        $this->xpathResolver = $xpathResolver ?: new XPathResolver();
         $this->tokenReplacer = new TokenReplacer();
     }
 
