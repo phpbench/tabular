@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<table>
+    <group name="body">
+        <row>
+            <cell name="time" class="time">444</cell>
+            <cell name="memory" class="memory">444</cell>
+        </row>
+        <row>
+            <cell name="time" class="time">444</cell>
+            <cell name="memory" class="memory">444</cell>
+        </row>
+    </group>
+    <group name="footer">
+        <row>
+            <cell name="time" class="time">888</cell>
+            <cell name="memory" class="memory">888</cell>
+        </row>
+    </group>
+</table>
