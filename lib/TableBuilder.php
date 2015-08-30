@@ -63,7 +63,6 @@ class TableBuilder
                 $selector = $this->xpathResolver->replaceFunctions($selector);
             }
 
-
             foreach ($sourceXpath->query($selector) as $sourceEl) {
                 if (isset($rowDefinition['group'])) {
                     $group = $rowDefinition['group'];

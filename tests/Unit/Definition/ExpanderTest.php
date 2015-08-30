@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit\Definition;
 
-use PhpBench\Tabular\Definition\Expander;
 use PhpBench\Tabular\Definition;
+use PhpBench\Tabular\Definition\Expander;
 
 class ExpanderTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,7 +50,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
             ),
         ));
         $definition->setMetadata(array(
-            'one', 'two', 'three', 'four'
+            'one', 'two', 'three', 'four',
         ), array());
 
         $this->expander->expand($definition);
@@ -78,7 +87,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should iterate cells
+     * It should iterate cells.
      */
     public function testIterateRows()
     {
@@ -87,7 +96,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
                 array(
                     'cells' => array(
                         array(
-                            'name' => '{{ cell.item }}', 
+                            'name' => '{{ cell.item }}',
                             'literal' => '1',
                             'with_items' => array('one', 'two'),
                         ),
@@ -103,7 +112,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
             ),
         ));
         $definition->setMetadata(array(
-            'one', 'two', 'three'
+            'one', 'two', 'three',
         ), array());
 
         $this->expander->expand($definition);
@@ -130,7 +139,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should iterate rows
+     * It should iterate rows.
      */
     public function testIterateCells()
     {
@@ -139,7 +148,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
                 array(
                     'cells' => array(
                         array(
-                            'name' => 'one', 
+                            'name' => 'one',
                             'literal' => '{{ row.item }}',
                         ),
                     ),
@@ -148,7 +157,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
             ),
         ));
         $definition->setMetadata(array(
-            'one'
+            'one',
         ), array());
 
         $this->expander->expand($definition);
@@ -173,7 +182,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
     /**
      * It should replace tokens in expressions
      * It should replace tokens in literals
-     * It should replace tokens in queries
+     * It should replace tokens in queries.
      */
     public function testReplaceTokens()
     {
@@ -182,12 +191,12 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
                 array(
                     'cells' => array(
                         array(
-                            'name' => '{{ cell.item }}', 
+                            'name' => '{{ cell.item }}',
                             'literal' => '{{ row.item }}-{{ cell.item }}',
                             'with_items' => array('alpha', 'beta'),
                         ),
                         array(
-                            'name' => 'expr-{{ cell.item }}', 
+                            'name' => 'expr-{{ cell.item }}',
                             'expr' => 'sum(//{{ param.foo }}/{{ row.item }}/{{ cell.item }}',
                             'with_items' => array('alpha', 'beta'),
                         ),
@@ -198,7 +207,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
             ),
         ));
         $definition->setMetadata(array(
-            'alpha', 'beta', 'expr-alpha', 'expr-beta'
+            'alpha', 'beta', 'expr-alpha', 'expr-beta',
         ), array());
         $this->expander->expand($definition, array('foo' => 'foo'));
 

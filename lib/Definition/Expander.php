@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Definition;
 
-use PhpBench\Tabular\TokenReplacer;
 use PhpBench\Tabular\Definition;
+use PhpBench\Tabular\TokenReplacer;
 
 class Expander
 {
@@ -19,7 +28,6 @@ class Expander
         $expRows = array();
 
         foreach ($definition['rows'] as $rowDefinition) {
-
             $rowItems = array(null);
             if (isset($rowDefinition['with_items'])) {
                 $rowItems = $rowDefinition['with_items'];
@@ -115,6 +123,7 @@ class Expander
      * be dynamic, in which case the name must be evaluated.
      *
      * @param array $cellDefinitions
+     *
      * @return array
      */
     private function indexCellDefinitions(array $cellDefinitions)

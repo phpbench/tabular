@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Definition;
 
 use JsonSchema\Validator;
 use PhpBench\Tabular\Definition;
-use PhpBench\Tabular\TokenReplacer;
 use PhpBench\Tabular\PathUtil;
+use PhpBench\Tabular\TokenReplacer;
 
 class Loader
 {
@@ -54,6 +63,7 @@ class Loader
         }
 
         $definitionArray = $this->loadDefinition($definition);
+
         return new Definition($definitionArray, $definition);
     }
 
@@ -127,7 +137,7 @@ class Loader
     }
 
     /**
-     * Merge any included definitions
+     * Merge any included definitions.
      */
     private function processDefinitionIncludes(Definition $definition)
     {
@@ -135,7 +145,7 @@ class Loader
             return;
         }
 
-        $baseDefinition =  array();
+        $baseDefinition = array();
         $validKeys = array('rows', 'sort', 'classes', 'params', 'includes');
 
         foreach ($definition['includes'] as $include) {

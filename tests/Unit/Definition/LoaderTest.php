@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PhpBench\Tabular\Tests\Unit;
 
-use PhpBench\Tabular\Definition\Loader;
 use PhpBench\Tabular\Definition;
+use PhpBench\Tabular\Definition\Loader;
 
 class LoaderTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,21 +24,21 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should accept Definition classes
+     * It should accept Definition classes.
      */
     public function testAcceptDefinitionClasses()
     {
         $result = $this->loader->load(new Definition(array(
-            'rows' => array()
+            'rows' => array(),
         )));
 
         $this->assertDefinition(array(
-            'rows' => array()
+            'rows' => array(),
         ), $result);
     }
 
     /**
-     * It should accept file names of definition files
+     * It should accept file names of definition files.
      */
     public function testAcceptFileNames()
     {
@@ -38,31 +47,31 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertDefinition(array(
             'rows' => array(
                 array('cells' => array(
-                    array('name' => 'foo', 'literal' => 'bar')
-                ))
-            )
+                    array('name' => 'foo', 'literal' => 'bar'),
+                )),
+            ),
         ), $result);
     }
 
     /**
-     * It should accept arrays as definitions
+     * It should accept arrays as definitions.
      */
     public function testAcceptArray()
     {
         $result = $this->loader->load(array(
             'rows' => array(
                 array('cells' => array(
-                    array('name' => 'foo', 'literal' => 'bar')
-                ))
-            )
+                    array('name' => 'foo', 'literal' => 'bar'),
+                )),
+            ),
         ));
 
         $this->assertDefinition(array(
             'rows' => array(
                 array('cells' => array(
-                    array('name' => 'foo', 'literal' => 'bar')
-                ))
-            )
+                    array('name' => 'foo', 'literal' => 'bar'),
+                )),
+            ),
         ), $result);
     }
 
@@ -78,18 +87,18 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if an unsupported type is passed as a definition
+     * It should throw an exception if an unsupported type is passed as a definition.
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Invalid definition
      */
     public function testDefinitionInvalidType()
     {
-        $this->loader->load(new \stdClass);
+        $this->loader->load(new \stdClass());
     }
 
     /**
-     * It should throw an exception if a file contains invalid JSON
+     * It should throw an exception if a file contains invalid JSON.
      *
      * @expectedException RuntimeException
      * @expectedExceptionMessage Could not decode
@@ -100,7 +109,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should include other configurations
+     * It should include other configurations.
      */
     public function testInclude()
     {
@@ -111,7 +120,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
                     array('printf', array('format' => 'hi')),
                 ),
                 'foo' => array(
-                    array('printf')
+                    array('printf'),
                 ),
             ),
             'rows' => array(
@@ -129,7 +138,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if an invalid number of items are supplied in the include tuple
+     * It should throw an exception if an invalid number of items are supplied in the include tuple.
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Invalid number
@@ -140,7 +149,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should evaluate and set the column names for the loaded definition
+     * It should evaluate and set the column names for the loaded definition.
      */
     public function testColumnNames()
     {
@@ -148,8 +157,8 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        array('name' => 'foo', 'literal' => 'bar')
-                    )
+                        array('name' => 'foo', 'literal' => 'bar'),
+                    ),
                 ),
                 array(
                     'cells' => array(
@@ -164,18 +173,18 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
                 array(
                     'cells' => array(
                         array('name' => 'hai', 'literal' => 'bye'),
-                    )
+                    ),
                 ),
             ),
         ));
 
         $this->assertEquals(array(
-            'foo', 'col_foo', 'col_bar', 'col_boo', 'hello', 'hai'
+            'foo', 'col_foo', 'col_bar', 'col_boo', 'hello', 'hai',
         ), $definition->getColumnNames());
     }
 
     /**
-     * It should record and sort the compiler pass numbers
+     * It should record and sort the compiler pass numbers.
      */
     public function testCompilerPassDefinition()
     {
@@ -183,7 +192,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        array('name' => 'foo', 'literal' => 'bar', 'pass' => 4)
+                        array('name' => 'foo', 'literal' => 'bar', 'pass' => 4),
                     ),
                 ),
                 array(

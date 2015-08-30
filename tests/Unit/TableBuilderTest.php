@@ -197,7 +197,7 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should perform compiler passes with multiple rows
+     * It should perform compiler passes with multiple rows.
      */
     public function testCompilerPassMultipleRows()
     {

@@ -46,13 +46,13 @@ EOT
         $this->formatter->setClassDefinition(
             'foo',
             array(
-                array('printf', array('format' => '%s'))
+                array('printf', array('format' => '%s')),
             )
         );
         $this->formatter->setClassDefinition(
             'bar',
             array(
-                array('printf', array('format' => '%s'))
+                array('printf', array('format' => '%s')),
             )
         );
         $this->format->getDefaultOptions()->willReturn(array('format' => 'xx'));
@@ -108,7 +108,7 @@ EOT
         $this->formatter->setClassDefinition(
             'foo',
             array(
-                array('printf', array('foo' => 'x', 'bar' => 'y'))
+                array('printf', array('foo' => 'x', 'bar' => 'y')),
             )
         );
         $this->format->getDefaultOptions()->willReturn(array('boo' => 'baz', 'baz' => 'boo'));

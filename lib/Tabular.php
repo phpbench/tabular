@@ -12,10 +12,9 @@
 namespace PhpBench\Tabular;
 
 use JsonSchema\Validator;
-use PhpBench\Tabular\Definition;
-use PhpBench\Tabular\Dom\Document;
-use PhpBench\Tabular\Definition\Loader;
 use PhpBench\Tabular\Definition\Expander;
+use PhpBench\Tabular\Definition\Loader;
+use PhpBench\Tabular\Dom\Document;
 
 class Tabular
 {
@@ -105,5 +104,4 @@ class Tabular
 
         return $tableDom;
     }
-
 }
