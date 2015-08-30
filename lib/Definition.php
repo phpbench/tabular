@@ -74,7 +74,7 @@ class Definition extends \ArrayObject
     }
 
     /**
-     * Return the column names of this definition
+     * Return the column names of this definition.
      *
      * @return string[]
      */
