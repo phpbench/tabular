@@ -11,7 +11,7 @@
 
 namespace PhpBench\Tabular;
 
-use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Dom\XPath;
 use PhpBench\Tabular\Dom\XPathResolver;
@@ -41,7 +41,7 @@ class TableBuilder
      */
     public function buildTable(\DOMDocument $sourceDom, Definition $definition, array $parameters = array())
     {
-        $tableDom = new Document();
+        $tableDom = new TableDom();
         $sourceXpath = new XPath($sourceDom);
         $this->xpathResolver->registerXPathFunctions($tableDom->xpath());
         $this->xpathResolver->registerXPathFunctions($sourceXpath);

@@ -11,12 +11,12 @@
 
 namespace PhpBench\Tabular;
 
-use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\Dom\Element;
 
 class Sort
 {
-    public static function sortTable(Document $tableDom, array $sortDefinition)
+    public static function sortTable(TableDom $tableDom, array $sortDefinition)
     {
         $groups = array();
 

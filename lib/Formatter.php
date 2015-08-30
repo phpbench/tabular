@@ -11,7 +11,7 @@
 
 namespace PhpBench\Tabular;
 
-use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\Dom\Element;
 use PhpBench\Tabular\Formatter\RegistryInterface;
 use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
@@ -26,7 +26,7 @@ class Formatter
         $this->registry = $registry ?: new ArrayRegistry();
     }
 
-    public function formatTable(Document $document)
+    public function formatTable(TableDom $document)
     {
         $document->formatOutput = true;
         $cellEls = $document->xpath()->query('//cell[@class]');

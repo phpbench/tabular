@@ -11,7 +11,7 @@
 
 namespace PhpBench\Tabular\Dom;
 
-class Document extends \DOMDocument
+class TableDom extends \DOMDocument
 {
     private $xpath;
 

@@ -15,7 +15,18 @@ require_once(__DIR__ . '/functions.php');
 
 class XPathResolver
 {
+    /**
+     * @var array
+     */
     private $functions = array();
+
+    /**
+     * Reserved XPath function anmes
+     *
+     * IMMUTABLE!
+     *
+     * @var array
+     */
     private $xpathFunctions = array(
         'last' => true,
         'position' => true,
@@ -46,11 +57,18 @@ class XPathResolver
         'round' => true,
     );
 
+    /**
+     * Register the default functions upon instantiation
+     */
+    public function __construct()
+    {
+        $this->registerDefaultFunctions();
+    }
+
     public function registerXPathFunctions(\DOMXpath $xpath)
     {
         $xpath->registerNamespace('php', 'http://php.net/xpath');
         $xpath->registerPhpFunctions(array_values($this->functions));
-        $this->registerDefaultFunctions();
     }
 
     public function registerFunction($name, $fqn)
@@ -99,5 +117,4 @@ class XPathResolver
         $this->registerFunction('max', 'PhpBench\Tabular\Dom\functions\max');
         $this->registerFunction('median', 'PhpBench\Tabular\Dom\functions\median');
     }
-
 }

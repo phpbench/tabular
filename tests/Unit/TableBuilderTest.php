@@ -12,7 +12,7 @@
 namespace PhpBench\Tabular\Tests\Unit;
 
 use PhpBench\Tabular\Definition;
-use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\TableBuilder;
 use Prophecy\Argument;
 
@@ -249,7 +249,7 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
         ), $result);
     }
 
-    private function assertTable($expected, Document $result)
+    private function assertTable($expected, TableDom $result)
     {
         $results = array();
         foreach ($result->xpath()->query('//row') as $rowEl) {

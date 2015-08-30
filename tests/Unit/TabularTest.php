@@ -13,7 +13,7 @@ namespace PhpBench\Tabular\Tests\Unit;
 
 use PhpBench\Tabular\Definition;
 use PhpBench\Tabular\Definition\Loader;
-use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\Dom\XPathResolver;
 use PhpBench\Tabular\Formatter;
 use PhpBench\Tabular\Formatter\Format\PrintfFormat;
@@ -28,21 +28,9 @@ class TabularTest extends \PHPUnit_Framework_TestCase
 
     public function __construct()
     {
-        $definitionLoader = new Loader();
-        $formatRegistry = new ArrayRegistry();
-        $formatRegistry->register('printf', new PrintfFormat());
-        $xpathResolver = new XPathResolver();
-        $xpathResolver->registerFunction('hello', 'PhpBench\Tabular\Tests\Unit\TabularTest::xpathFunction');
-        $tableBuilder = new TableBuilder($xpathResolver);
-        $formatter = new Formatter($formatRegistry);
-        $this->tabular = new Tabular($tableBuilder, $definitionLoader, $formatter);
+        $this->tabular = Tabular::getInstance();
         $this->document = new \DOMDocument();
         $this->document->load(__DIR__ . '/fixtures/report.xml');
-    }
-
-    public static function xpathFunction()
-    {
-        return 'hello';
     }
 
     /**
@@ -266,7 +254,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
                     'cells' => array(
                         array(
                             'name' => 'one',
-                            'expr' => 'string(hello())',
+                            'expr' => 'string(sum(//@time))',
                         ),
                     ),
                 ),
@@ -274,11 +262,11 @@ class TabularTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertTable(array(
-            array('one' => 'hello'),
+            array('one' => '80'),
         ), $result);
     }
 
-    private function assertTable($expected, Document $result)
+    private function assertTable($expected, TableDom $result)
     {
         $results = array();
         foreach ($result->xpath()->query('//row') as $rowEl) {

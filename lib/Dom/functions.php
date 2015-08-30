@@ -9,6 +9,12 @@
  * file that was distributed with this source code.
  */
 
+/**
+ * This file contains functions which are used in XPath expressions.
+ * Note that attempting to use a static class for this purpose does not work, it
+ * would seem that only functions can be registered in an XPath instance.
+ */
+
 namespace PhpBench\Tabular\Dom\functions;
 
 /**
@@ -143,6 +149,9 @@ function deviation($standardValue, $actualValue)
     return 100 / $standardValue * ($actualValue - $standardValue);
 }
 
+/**
+ * @access private
+ */
 function getValues($values)
 {
     $newValues = array();
@@ -163,6 +172,9 @@ function getValues($values)
     return $newValues;
 }
 
+/**
+ * @access private
+ */
 function getValue($value)
 {
     $values = getValues(array($value));

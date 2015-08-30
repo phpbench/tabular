@@ -11,7 +11,7 @@
 
 namespace PhpBench\Tabular\Tests\Unit;
 
-use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\Sort;
 
 class SortTest extends \PHPUnit_Framework_TestCase
@@ -171,7 +171,7 @@ EOT
 
     private function createTable($xml)
     {
-        $table = new Document();
+        $table = new TableDom();
         $table->formatOutput = true;
         $table->loadXml($xml);
 

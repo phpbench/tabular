@@ -14,7 +14,10 @@ namespace PhpBench\Tabular;
 use JsonSchema\Validator;
 use PhpBench\Tabular\Definition\Expander;
 use PhpBench\Tabular\Definition\Loader;
-use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Dom\TableDom;
+use PhpBench\Tabular\Formatter;
+use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
+use PhpBench\Tabular\Formatter\Format;
 
 class Tabular
 {
@@ -45,12 +48,33 @@ class Tabular
      * @param Validator $validator
      * @param Formatter $formatter
      */
-    public function __construct(TableBuilder $tableBuilder = null, Loader $definitionLoader = null, Formatter $formatter = null, Expander $expander = null)
+    public function __construct(TableBuilder $tableBuilder, Loader $definitionLoader, Formatter $formatter, Expander $expander)
     {
-        $this->definitionLoader = $definitionLoader ?: new Loader();
+        $this->definitionLoader = $definitionLoader;
         $this->tableBuilder = $tableBuilder ?: new TableBuilder();
         $this->formatter = $formatter ?: new Formatter();
         $this->expander = $expander ?: new Expander();
+    }
+
+    /**
+     * Return a new instance of tabular with a default configuration
+     *
+     * @return Tabular
+     */
+    public static function getInstance()
+    {
+        $registry = new ArrayRegistry();
+        $registry->register('printf', new Format\PrintfFormat());
+        $registry->register('balance', new Format\BalanceFormat());
+        $registry->register('number', new Format\NumberFormat());
+
+        $formatter = new Formatter($registry);
+
+        $tableBuilder = new TableBuilder();
+        $loader = new Loader();
+        $expander = new Expander();
+
+        return new self($tableBuilder, $loader, $formatter, $expander);
     }
 
     /**
@@ -62,7 +86,7 @@ class Tabular
      * @param array|string|Definition $definition
      * @param array $parameters
      *
-     * @return Document
+     * @return TableDom
      */
     public function tabulate(\DOMDocument $sourceDom, $definition, array $parameters = array())
     {
