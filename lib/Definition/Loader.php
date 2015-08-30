@@ -30,8 +30,8 @@ class Loader
         $definition = $this->normalizeDefinition($definition);
 
         $this->processDefinitionIncludes($definition);
-        $this->processMetadata($definition);
         $this->validateDefinition($definition);
+        $this->processMetadata($definition);
 
         return $definition;
     }
