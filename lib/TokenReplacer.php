@@ -45,8 +45,7 @@ class TokenReplacer
 
             if ($context === 'param') {
                 $value = $parameters;
-            }
-            elseif ($context === 'row') {
+            } elseif ($context === 'row') {
                 $value = $rowItem;
             } else {
                 $value = $cellItem;

@@ -71,7 +71,6 @@ class Formatter
             }
 
             $options = array_merge($defaultOptions, $options);
-
             $value = $formatter->format($value, $options);
         }
 

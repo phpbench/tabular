@@ -11,6 +11,7 @@
 
 namespace PhpBench\Tabular\Tests\Unit;
 
+use PhpBench\Tabular\Definition;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\TableBuilder;
 use Prophecy\Argument;
@@ -35,22 +36,24 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * It should convert transform an XML document into a table using a given configuration.
      */
-    public function testTabularize()
+    public function testBuildTable()
     {
-        $result = $this->rowBuilder->buildTable($this->document, array(
-            array(
-                'cells' => array(
-                    array(
-                        'name' => 'time',
-                        'expr' => 'sum(//iteration/@time)',
-                    ),
-                    array(
-                        'name' => 'memory',
-                        'expr' => 'sum(//iteration/@memory)',
+        $result = $this->rowBuilder->buildTable($this->document, $this->loadDefinition(array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        array(
+                            'name' => 'time',
+                            'expr' => 'sum(//iteration/@time)',
+                        ),
+                        array(
+                            'name' => 'memory',
+                            'expr' => 'sum(//iteration/@memory)',
+                        ),
                     ),
                 ),
             ),
-        ));
+        )));
 
         $this->assertTable(array(
             array(
@@ -65,21 +68,23 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithQuery()
     {
-        $result = $this->rowBuilder->buildTable($this->document, array(
-            'one' => array(
-                'cells' => array(
-                    array(
-                        'name' => 'time',
-                        'expr' => 'sum(.//iteration/@time)',
+        $result = $this->rowBuilder->buildTable($this->document, $this->loadDefinition(array(
+            'rows' => array(
+                'one' => array(
+                    'cells' => array(
+                        array(
+                            'name' => 'time',
+                            'expr' => 'sum(.//iteration/@time)',
+                        ),
+                        array(
+                            'name' => 'memory',
+                            'expr' => 'sum(.//iteration/@memory)',
+                        ),
                     ),
-                    array(
-                        'name' => 'memory',
-                        'expr' => 'sum(.//iteration/@memory)',
-                    ),
+                    'with_query' => '//subject',
                 ),
-                'with_query' => '//subject',
             ),
-        ));
+        )));
 
         $this->assertTable(array(
             array(
@@ -98,34 +103,36 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGroups()
     {
-        $result = $this->rowBuilder->buildTable($this->document, array(
-            'one' => array(
-                'group' => 'one',
-                'cells' => array(
-                    array(
-                        'name' => 'time',
-                        'expr' => 'sum(.//iteration/@time)',
+        $result = $this->rowBuilder->buildTable($this->document, $this->loadDefinition(array(
+            'rows' => array(
+                'one' => array(
+                    'group' => 'one',
+                    'cells' => array(
+                        array(
+                            'name' => 'time',
+                            'expr' => 'sum(.//iteration/@time)',
+                        ),
+                        array(
+                            'name' => 'memory',
+                            'expr' => 'sum(.//iteration/@memory)',
+                        ),
                     ),
-                    array(
-                        'name' => 'memory',
-                        'expr' => 'sum(.//iteration/@memory)',
+                ),
+                'two' => array(
+                    'group' => 'two',
+                    'cells' => array(
+                        array(
+                            'name' => 'time',
+                            'expr' => 'sum(.//iteration/@time)',
+                        ),
+                        array(
+                            'name' => 'memory',
+                            'expr' => 'sum(.//iteration/@memory)',
+                        ),
                     ),
                 ),
             ),
-            'two' => array(
-                'group' => 'two',
-                'cells' => array(
-                    array(
-                        'name' => 'time',
-                        'expr' => 'sum(.//iteration/@time)',
-                    ),
-                    array(
-                        'name' => 'memory',
-                        'expr' => 'sum(.//iteration/@memory)',
-                    ),
-                ),
-            ),
-        ));
+        )));
 
         $this->assertEquals('one', $result->xpath()->evaluate('string(/table/group[1]/@name)'));
         $this->assertEquals('two', $result->xpath()->evaluate('string(/table/group[2]/@name)'));
@@ -136,16 +143,18 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLiteralCellValue()
     {
-        $result = $this->rowBuilder->buildTable($this->document, array(
-            'one' => array(
-                'cells' => array(
-                    array(
-                        'name' => 'one',
-                        'literal' => 'Helli',
+        $result = $this->rowBuilder->buildTable($this->document, $this->loadDefinition(array(
+            'rows' => array(
+                'one' => array(
+                    'cells' => array(
+                        array(
+                            'name' => 'one',
+                            'literal' => 'Helli',
+                        ),
                     ),
                 ),
             ),
-        ));
+        )));
 
         $this->assertTable(array(
             array('one' => 'Helli'),
@@ -153,50 +162,90 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should iterate over parameters on ROWS.
+     * It should allow compiler passes.
      */
-    public function testIterateParameterRows()
+    public function testCompilerPass()
     {
-        $result = $this->rowBuilder->buildTable($this->document, array(
-            array(
-                'group' => 'one',
-                'cells' => array(
-                    array(
-                        'name' => 'param',
-                        'literal' => '{{ row.item }}',
+        $definition = $this->loadDefinition(array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        array(
+                            'name' => 'one',
+                            'literal' => 5,
+                        ),
+                        array(
+                            'name' => 'three',
+                            'pass' => 10,
+                            'expr' => 'sum(//cell[@name="two"]) + 1',
+                        ),
+                        array(
+                            'name' => 'two',
+                            'pass' => 5,
+                            'expr' => 'sum(//cell[@name="one"])',
+                        ),
                     ),
                 ),
-                'with_items' => array('one', 'two'),
             ),
         ));
+        $definition->setMetadata(array('one', 'two', 'three'), array(5, 10));
+        $result = $this->rowBuilder->buildTable($this->document, $definition);
 
         $this->assertTable(array(
-            array('param' => 'one'),
-            array('param' => 'two'),
+            array('one' => '5', 'two' => '5', 'three' => '6'),
         ), $result);
     }
 
     /**
-     * It should iterate over parameters on CELLS
-     * It should dynamically create columns using CELLS.
+     * It should perform compiler passes with multiple rows.
      */
-    public function testIterateParameterCells()
+    public function testCompilerPassMultipleRows()
     {
-        $result = $this->rowBuilder->buildTable($this->document, array(
-            array(
-                'group' => 'one',
-                'cells' => array(
-                    array(
-                        'name' => 'cell_{{ cell.item }}',
-                        'literal' => '{{ cell.item }}',
-                        'with_items' => array('one', 'two'),
+        $definition = $this->loadDefinition(array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        array(
+                            'name' => 'one',
+                            'literal' => 5,
+                        ),
+                        array(
+                            'name' => 'two',
+                            'literal' => '',
+                        ),
+                        array(
+                            'name' => 'three',
+                            'literal' => '',
+                        ),
+                    ),
+                ),
+                array(
+                    'group' => 'footer',
+                    'cells' => array(
+                        array(
+                            'name' => 'one',
+                            'literal' => '',
+                        ),
+                        array(
+                            'name' => 'three',
+                            'pass' => 10,
+                            'expr' => 'sum(//group[@name="footer"]//cell[@name="two"]) + 1',
+                        ),
+                        array(
+                            'name' => 'two',
+                            'pass' => 5,
+                            'expr' => 'sum(//group[@name="_default"]//cell[@name="one"])',
+                        ),
                     ),
                 ),
             ),
         ));
+        $definition->setMetadata(array('one', 'two', 'three'), array(5, 10));
+        $result = $this->rowBuilder->buildTable($this->document, $definition);
 
         $this->assertTable(array(
-            array('cell_one' => 'one', 'cell_two' => 'two'),
+            array('one' => '5', 'two' => '', 'three' => ''),
+            array('one' => '', 'two' => '5', 'three' => '6'),
         ), $result);
     }
 
@@ -212,5 +261,10 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($expected, $results);
+    }
+
+    private function loadDefinition(array $definition)
+    {
+        return new Definition($definition);
     }
 }

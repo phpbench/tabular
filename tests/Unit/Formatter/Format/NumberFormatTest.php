@@ -32,7 +32,7 @@ class NumberFormatTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if passed a non-numeric value
+     * It should throw an exception if passed a non-numeric value.
      *
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Non-numeric value

@@ -1,32 +1,75 @@
 <?php
 
-namespace PhpBench\Tabular;
+/*
+ * This file is part of the Tabular  package
+ *
+ * (c) Daniel Leech <daniel@dantleech.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace PhpBench\Tabular\Definition;
 
 use JsonSchema\Validator;
 use PhpBench\Tabular\Definition;
+use PhpBench\Tabular\PathUtil;
+use PhpBench\Tabular\TokenReplacer;
 
-class DefinitionLoader
+/**
+ * Loads the table definition, processes any includes and determines
+ * meta information such as the number of columns and the compiler pass numbers.
+ */
+class Loader
 {
     /**
      * @var Validator
      */
     private $validator;
 
-    public function __construct(Validator $validator = null)
+    /**
+     * @var TokenReplacer
+     */
+    private $tokenReplacer;
+
+    /**
+     * @param Validator $validator
+     * @param TokenReplacer $tokenReplacer
+     */
+    public function __construct(Validator $validator = null, TokenReplacer $tokenReplacer = null)
     {
         $this->validator = $validator ?: new Validator();
+        $this->tokenReplacer = $tokenReplacer ?: new TokenReplacer();
     }
 
+    /**
+     * Load the definition.
+     *
+     * $definition can be a file name, an array or a Definition class.
+     *
+     * Note that in order for relative file includes to work either a filename
+     * or a Definition instance with the configured basepath must be given.
+     *
+     * @param mixed $definition
+     */
     public function load($definition)
     {
         $definition = $this->normalizeDefinition($definition);
 
         $this->processDefinitionIncludes($definition);
         $this->validateDefinition($definition);
+        $this->processMetadata($definition);
 
         return $definition;
     }
 
+    /**
+     * Normalize the definition to a Definition class.
+     *
+     * @param mixed $definition
+     *
+     * @return Definition
+     */
     private function normalizeDefinition($definition)
     {
         if ($definition instanceof Definition) {
@@ -45,9 +88,53 @@ class DefinitionLoader
         }
 
         $definitionArray = $this->loadDefinition($definition);
+
         return new Definition($definitionArray, $definition);
     }
 
+    /**
+     * Iterate over the definition and determine the number of columns and compiler
+     * passes.
+     *
+     * @param Definition
+     */
+    private function processMetadata(Definition $definition)
+    {
+        $columns = array();
+        $passes = array();
+
+        foreach ($definition['rows'] as $rowDefinition) {
+            foreach ($rowDefinition['cells'] as $cellDefinition) {
+                $cellName = $cellDefinition['name'];
+
+                if (isset($cellDefinition['pass'])) {
+                    $passes[] = $cellDefinition['pass'];
+                }
+
+                $cellItems = array(null);
+                if (isset($cellDefinition['with_items'])) {
+                    $cellItems = $cellDefinition['with_items'];
+                }
+
+                foreach ($cellItems as $cellItem) {
+                    $evaledCellName = $this->tokenReplacer->replaceTokens($cellName, null, $cellItem);
+                    $columns[] = $evaledCellName;
+                }
+            }
+        }
+
+        sort($passes);
+
+        $definition->setMetadata($columns, $passes);
+    }
+
+    /**
+     * Load the definition data from a file.
+     *
+     * @param string $filePath
+     *
+     * @return array
+     */
     private function loadDefinition($filePath)
     {
         if (!file_exists($filePath)) {
@@ -69,10 +156,15 @@ class DefinitionLoader
         return $definition;
     }
 
+    /**
+     * Validate the definition file.
+     *
+     * @param Definition
+     */
     private function validateDefinition(Definition $definition)
     {
         $definition = json_decode(json_encode($definition));
-        $this->validator->check($definition, json_decode(file_get_contents(__DIR__ . '/schema/table.json')));
+        $this->validator->check($definition, json_decode(file_get_contents(__DIR__ . '/../schema/table.json')));
 
         if (!$this->validator->isValid()) {
             $errorString = array();
@@ -88,7 +180,9 @@ class DefinitionLoader
     }
 
     /**
-     * Merge any included definitions
+     * Merge any included definitions.
+     *
+     * @param Definition
      */
     private function processDefinitionIncludes(Definition $definition)
     {
@@ -96,7 +190,7 @@ class DefinitionLoader
             return;
         }
 
-        $baseDefinition =  array();
+        $baseDefinition = array();
         $validKeys = array('rows', 'sort', 'classes', 'params', 'includes');
 
         foreach ($definition['includes'] as $include) {

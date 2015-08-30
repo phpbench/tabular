@@ -11,7 +11,8 @@
 
 namespace PhpBench\Tabular\Tests\Unit;
 
-use JsonSchema\Validator;
+use PhpBench\Tabular\Definition;
+use PhpBench\Tabular\Definition\Loader;
 use PhpBench\Tabular\Dom\Document;
 use PhpBench\Tabular\Dom\XPathResolver;
 use PhpBench\Tabular\Formatter;
@@ -19,8 +20,6 @@ use PhpBench\Tabular\Formatter\Format\PrintfFormat;
 use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
 use PhpBench\Tabular\TableBuilder;
 use PhpBench\Tabular\Tabular;
-use PhpBench\Tabular\Definition;
-use PhpBench\Tabular\DefinitionLoader;
 
 class TabularTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,7 +28,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
 
     public function __construct()
     {
-        $definitionLoader = new DefinitionLoader();
+        $definitionLoader = new Loader();
         $formatRegistry = new ArrayRegistry();
         $formatRegistry->register('printf', new PrintfFormat());
         $xpathResolver = new XPathResolver();
@@ -192,58 +191,6 @@ class TabularTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should iterate over parameters on ROWS.
-     */
-    public function testIterateParameterRows()
-    {
-        $result = $this->tabular->tabulate($this->document, array(
-            'rows' => array(
-                array(
-                    'group' => 'one',
-                    'cells' => array(
-                        array(
-                            'name' => 'param',
-                            'literal' => '{{ row.item }}',
-                        ),
-                    ),
-                    'with_items' => array('one', 'two'),
-                ),
-            ),
-        ));
-
-        $this->assertTable(array(
-            array('param' => 'one'),
-            array('param' => 'two'),
-        ), $result);
-    }
-
-    /**
-     * It should iterate over parameters on CELLS
-     * It should dynamically create columns using CELLS.
-     */
-    public function testIterateParameterCells()
-    {
-        $result = $this->tabular->tabulate($this->document, array(
-            'rows' => array(
-                array(
-                    'group' => 'one',
-                    'cells' => array(
-                        array(
-                            'name' => 'cell_{{ cell.item }}',
-                            'literal' => '{{ cell.item }}',
-                            'with_items' => array('one', 'two'),
-                        ),
-                    ),
-                ),
-            ),
-        ));
-
-        $this->assertTable(array(
-            array('cell_one' => 'one', 'cell_two' => 'two'),
-        ), $result);
-    }
-
-    /**
      * It should sort rows by a single column ascending.
      */
     public function testSortSingleColumn()
@@ -331,86 +278,6 @@ class TabularTest extends \PHPUnit_Framework_TestCase
         ), $result);
     }
 
-    /**
-     * It should allow compiler passes.
-     */
-    public function testCompilerPass()
-    {
-        $result = $this->tabular->tabulate($this->document, array(
-            'rows' => array(
-                array(
-                    'cells' => array(
-                        array(
-                            'name' => 'one',
-                            'literal' => 5,
-                        ),
-                        array(
-                            'name' => 'three',
-                            'pass' => 10,
-                            'expr' => 'sum(//cell[@name="two"]) + 1',
-                        ),
-                        array(
-                            'name' => 'two',
-                            'pass' => 5,
-                            'expr' => 'sum(//cell[@name="one"])',
-                        ),
-                    ),
-                ),
-            ),
-        ));
-
-        $this->assertTable(array(
-            array('one' => '5', 'two' => '5', 'three' => '6'),
-        ), $result);
-    }
-
-    /**
-     * It should allow parameterized definitions
-     */
-    public function testParameterized()
-    {
-        $result = $this->tabular->tabulate($this->document, array(
-            'rows' => array(
-                array(
-                    'cells' => array(
-                        array(
-                            'name' => 'one',
-                            'literal' => '{{ param.foo }}',
-                        ),
-                    ),
-                ),
-            ),
-            'params' => array('foo' => 'bar'),
-        ));
-
-        $this->assertTable(array(
-            array('one' => 'bar'),
-        ), $result);
-    }
-
-    /**
-     * It should override default parameters
-     */
-    public function testParametersOverride()
-    {
-        $result = $this->tabular->tabulate($this->document, array(
-            'rows' => array(
-                array(
-                    'cells' => array(
-                        array(
-                            'name' => 'one',
-                            'literal' => '{{ param.foo }}',
-                        ),
-                    ),
-                ),
-            ),
-            'params' => array('foo' => 'bar'),
-        ), array('foo' => 'baz'));
-
-        $this->assertTable(array(
-            array('one' => 'baz'),
-        ), $result);
-    }
     private function assertTable($expected, Document $result)
     {
         $results = array();

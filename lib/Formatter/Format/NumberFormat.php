@@ -23,6 +23,7 @@ class NumberFormat implements FormatInterface
                 print_r($subject, true)
             ));
         }
+
         return number_format($subject, $options['decimal_places'], $options['decimal_point'], $options['thousands_separator']);
     }
 
