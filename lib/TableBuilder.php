@@ -39,7 +39,7 @@ class TableBuilder
      *
      * @return Document
      */
-    public function buildTable(\DOMDocument $sourceDom, array $rowDefinitions, array $parameters = array())
+    public function buildTable(\DOMDocument $sourceDom, Definition $definition, array $parameters = array())
     {
         $tableDom = new Document();
         $sourceXpath = new XPath($sourceDom);
@@ -47,145 +47,86 @@ class TableBuilder
         $this->xpathResolver->registerXPathFunctions($sourceXpath);
 
         $tableEl = $tableDom->createRoot('table');
-        $tableInfo = $this->getTableInfo($rowDefinitions);
-        $this->iterateRowDefinitions($tableInfo, $tableEl, $sourceXpath, $rowDefinitions, $parameters);
-        $this->executePasses($tableInfo, $tableEl);
+        $this->iterateRowDefinitions($tableEl, $sourceXpath, $definition, $parameters);
+        $this->executePasses($definition, $tableEl);
 
         return $tableDom;
     }
 
-    private function iterateRowDefinitions(TableInfo $tableInfo, Element $tableEl, XPath $sourceXpath, $rowDefinitions, array $parameters)
+    private function iterateRowDefinitions(Element $tableEl, XPath $sourceXpath, Definition $definition, array $parameters)
     {
-        foreach ($rowDefinitions as $rowDefinition) {
+        foreach ($definition['rows'] as $rowDefinition) {
             $selector = '/';
 
-            $rowItems = array(null);
-
-            if (isset($rowDefinition['with_items'])) {
-                $rowItems = $rowDefinition['with_items'];
-            }
-
-            foreach ($rowItems as $rowItem) {
-                if (isset($rowDefinition['with_query'])) {
-                    $selector = $this->tokenReplacer->replaceTokens($rowDefinition['with_query'], $rowItem, null, $parameters);
-                }
-
+            if (isset($rowDefinition['with_query'])) {
+                $selector = $rowDefinition['with_query'];
                 $selector = $this->xpathResolver->replaceFunctions($selector);
+            }
 
-                foreach ($sourceXpath->query($selector) as $sourceEl) {
-                    if (isset($rowDefinition['group'])) {
-                        $group = $rowDefinition['group'];
-                    } else {
-                        $group = self::DEFAULT_GROUP;
+
+            foreach ($sourceXpath->query($selector) as $sourceEl) {
+                if (isset($rowDefinition['group'])) {
+                    $group = $rowDefinition['group'];
+                } else {
+                    $group = self::DEFAULT_GROUP;
+                }
+
+                $groupEls = $tableEl->ownerDocument->xpath()->query('//group[@name="' . $group .'"]');
+
+                if ($groupEls->length > 0) {
+                    $groupEl = $groupEls->item(0);
+                } else {
+                    $groupEl = $tableEl->appendElement('group');
+                    $groupEl->setAttribute('name', $group);
+                }
+
+                $rowEl = $groupEl->appendElement('row');
+
+                foreach ($rowDefinition['cells'] as $cellDefinition) {
+                    $columnName = $cellDefinition['name'];
+
+                    $cellEl = $rowEl->appendElement('cell');
+                    $cellEl->setAttribute('name', $columnName);
+
+                    $pass = null;
+                    if (isset($cellDefinition['pass'])) {
+                        $pass = $cellDefinition['pass'];
+                        $cellEl->setAttribute('pass', $pass);
                     }
 
-                    $groupEls = $tableEl->ownerDocument->xpath()->query('//group[@name="' . $group .'"]');
+                    $value = null;
 
-                    if ($groupEls->length > 0) {
-                        $groupEl = $groupEls->item(0);
-                    } else {
-                        $groupEl = $tableEl->appendElement('group');
-                        $groupEl->setAttribute('name', $group);
+                    if (isset($cellDefinition['class'])) {
+                        $class = $cellDefinition['class'];
+                        if ($class) {
+                            $cellEl->setAttribute('class', $class);
+                        }
                     }
 
-                    $rowEl = $groupEl->appendElement('row');
+                    if (isset($cellDefinition['expr'])) {
+                        $expr = $cellDefinition['expr'];
+                        $expr = $this->xpathResolver->replaceFunctions($expr);
 
-                    foreach ($tableInfo->columns as $columnName => $column) {
-                        $cellEl = $rowEl->appendElement('cell');
-                        $cellEl->setAttribute('name', $columnName);
-
-                        $cellDefinition = $rowDefinition['cells'][$column->definitionIndex];
-
-                        $pass = null;
-                        if (isset($cellDefinition['pass'])) {
-                            $pass = $cellDefinition['pass'];
-                            $cellEl->setAttribute('pass', $pass);
+                        if (null === $pass) {
+                            $value = $sourceXpath->evaluate($expr, $sourceEl);
+                        } else {
+                            $value = $expr;
                         }
-
-                        $cellItem = null;
-                        $value = null;
-
-                        if (isset($cellDefinition['with_items'])) {
-                            if (isset($cellDefinition['with_items'][$column->itemIndex])) {
-                                $cellItem = $cellDefinition['with_items'][$column->itemIndex];
-                            }
-                        }
-
-                        if (isset($cellDefinition['class'])) {
-                            $class = $this->tokenReplacer->replaceTokens($cellDefinition['class'], $rowItem, $cellItem, $parameters);
-                            if ($class) {
-                                $cellEl->setAttribute('class', $class);
-                            }
-                        }
-
-                        if (isset($cellDefinition['expr'])) {
-                            $expr = $cellDefinition['expr'];
-                            $expr = $this->tokenReplacer->replaceTokens($expr, $rowItem, $cellItem, $parameters);
-                            $expr = $this->xpathResolver->replaceFunctions($expr);
-
-                            if (null === $pass) {
-                                $value = $sourceXpath->evaluate($expr, $sourceEl);
-                            } else {
-                                $value = $expr;
-                            }
-                        }
-
-                        if (array_key_exists('literal', $cellDefinition)) {
-                            $value = $this->tokenReplacer->replaceTokens($cellDefinition['literal'], $rowItem, $cellItem, $parameters);
-                        }
-
-                        $cellEl->nodeValue = $value;
                     }
+
+                    if (array_key_exists('literal', $cellDefinition)) {
+                        $value = $cellDefinition['literal'];
+                    }
+
+                    $cellEl->nodeValue = $value;
                 }
             }
         }
     }
 
-    private function getTableInfo($rowDefinitions)
+    private function executePasses(Definition $definition, Element $tableEl)
     {
-        $tableInfo = new TableInfo();
-        $columns = array();
-        $groups = array();
-        $passes = array();
-
-        foreach ($rowDefinitions as $rowDefinition) {
-            if (isset($rowDefinition['group'])) {
-                $groups[$rowDefinition['group']] = true;
-            }
-
-            foreach ($rowDefinition['cells'] as $definitionIndex => $cellDefinition) {
-                $cellName = $cellDefinition['name'];
-                $cellItems = array(null);
-                if (isset($cellDefinition['with_items'])) {
-                    $cellItems = $cellDefinition['with_items'];
-                }
-
-                if (isset($cellDefinition['pass'])) {
-                    $passes[] = $cellDefinition['pass'];
-                }
-
-                foreach ($cellItems as $paramIndex => $cellItem) {
-                    $column = new ColumnInfo();
-                    $column->itemIndex = $paramIndex;
-                    $column->originalName = $cellName;
-                    $column->definitionIndex = $definitionIndex;
-                    $evaledCellName = $this->tokenReplacer->replaceTokens($cellName, null, $cellItem);
-                    $column->name = $evaledCellName;
-                    $columns[$evaledCellName] = $column;
-                }
-            }
-        }
-        sort($passes);
-        $tableInfo->columns = $columns;
-        $tableInfo->groups = array_keys($groups);
-        $tableInfo->passes = $passes;
-
-        return $tableInfo;
-    }
-
-    private function executePasses(TableInfo $tableInfo, Element $tableEl)
-    {
-        foreach ($tableInfo->passes as $pass) {
+        foreach ($definition->getPasses() as $pass) {
             $passCellEls = $tableEl->ownerDocument->xpath()->query('//cell[@pass="' . $pass . '"]');
 
             foreach ($passCellEls as $passCellEl) {

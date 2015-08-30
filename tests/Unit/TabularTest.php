@@ -21,6 +21,7 @@ use PhpBench\Tabular\TableBuilder;
 use PhpBench\Tabular\Tabular;
 use PhpBench\Tabular\Definition;
 use PhpBench\Tabular\DefinitionLoader;
+use PhpBench\Tabular\Definition\Loader;
 
 class TabularTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,7 +30,7 @@ class TabularTest extends \PHPUnit_Framework_TestCase
 
     public function __construct()
     {
-        $definitionLoader = new DefinitionLoader();
+        $definitionLoader = new Loader();
         $formatRegistry = new ArrayRegistry();
         $formatRegistry->register('printf', new PrintfFormat());
         $xpathResolver = new XPathResolver();

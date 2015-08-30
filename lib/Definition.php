@@ -4,8 +4,8 @@ namespace PhpBench\Tabular;
 
 class Definition extends \ArrayObject
 {
-    private $passes;
-    private $columnNames;
+    private $passes = array();
+    private $columnNames = array();
     private $path;
 
     public function __construct(array $definition, $path = null)

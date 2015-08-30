@@ -14,6 +14,7 @@ namespace PhpBench\Tabular;
 use JsonSchema\Validator;
 use PhpBench\Tabular\Definition;
 use PhpBench\Tabular\Dom\Document;
+use PhpBench\Tabular\Definition\Loader;
 
 class Tabular
 {
@@ -39,7 +40,7 @@ class Tabular
      * @param Validator $validator
      * @param Formatter $formatter
      */
-    public function __construct(TableBuilder $tableBuilder, DefinitionLoader $definitionLoader, Formatter $formatter)
+    public function __construct(TableBuilder $tableBuilder, Loader $definitionLoader, Formatter $formatter)
     {
         $this->definitionLoader = $definitionLoader;
         $this->tableBuilder = $tableBuilder;
