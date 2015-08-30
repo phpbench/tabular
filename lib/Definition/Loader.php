@@ -64,9 +64,10 @@ class Loader
     }
 
     /**
-     * Normalize the definition to a Definition class
+     * Normalize the definition to a Definition class.
      *
      * @param mixed $definition
+     *
      * @return Definition
      */
     private function normalizeDefinition($definition)
@@ -131,6 +132,7 @@ class Loader
      * Load the definition data from a file.
      *
      * @param string $filePath
+     *
      * @return array
      */
     private function loadDefinition($filePath)
