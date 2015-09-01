@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title></title>
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/highlight.dark.css">
+        <link rel="stylesheet" href="/css/main.css">
+    </head>
+    <body>
+
+        <header class="navbar navbar-default navbar-fixed-top">
+
+            <a class="navbar-brand" href="/">
+                The title
+                <small class="hidden-xs hidden-sm">
+                    This is the default subtitle!
+                </small>
+            </a>
+
+            
+        </header>
+
+        <main class="container">
+            <div class="row">
+
+                
+                <section id="content" class="col-sm-12">
+                    <h1 id="definition">Definition</h1>
+<p>The definition is the JSON file which determines how the table will be
+generated. The generated table is provided as a DOM document and will be
+referred to as the <em>table representation</em> in the rest of this document.</p>
+<p>The JSON definition is very strict, but do not fear. It is validated against a JSON schema
+which provides accurate clues as to what goes wrong, when it goes wrong.</p>
+<h2 id="rows">Rows</h2>
+<p>In Tabular you define row <em>prototypes</em> which will be expanded into the final
+table row data.</p>
+<p>The simplest (well almost the simplest) valid definition is as follows:</p>
+<pre><code class="language-javascript">{
+    "rows": [
+        {
+            "cells": [
+                {
+                    "name": "Cell One",
+                    "literal": "Value of cell one"
+                }
+            ]
+        }
+    ]
+}</code></pre>
+<p>This will produce a table representation with a single row which has a single
+cell with the value <code>Value of cell one</code>.</p>
+<ul>
+<li>
+<p>The <code>rows</code> property is an array of &quot;row&quot; <em>objects</em>.</p>
+</li>
+<li>
+<p>Each row object can defines a single or a potential set of rows, depending on if
+<em>iteration</em> is used (<code>with_query</code>, <code>with_items</code>).  More on this later.</p>
+</li>
+<li>Each row must deifine the <code>cells</code> property which should contain an array of
+<em>cell</em> objects. This object can be empty which will create an empty row.</li>
+</ul>
+<h2 id="expressions">Expressions</h2>
+<p>Expressions allow the value of cell to be evaluated from an XPath expression
+which acts upon the given XML source document.</p>
+<pre><code class="language-javascript">{
+    "rows": [
+        {
+            "cells": [
+                // ...
+                {
+                    "name": "Evaluated Cell",
+                    "expr": "sum(//price)"
+                }
+            ]
+        }
+    ]
+}</code></pre>
+<p>The <code>expr</code> property is an XPath expression, and will return the sum total of
+all the <code>&lt;price/&gt;</code> node values.</p>
+<p>Tabular leverages the <code>register_php_functions</code> feature of PHP's XPath object
+to register custom functions:</p>
+<pre><code class="language-javascript">{
+    "rows": [
+        {
+            "cells": [
+                {
+                    "name": "Minimum Price",
+                    "expr": "min(//price)"
+                },
+                {
+                    "name": "Maximum Price",
+                    "expr": "max(//price)"
+                },
+                {
+                    "name": "Maximum Price",
+                    "expr": "average(//price)"
+                },
+            ]
+        }
+    ]
+}</code></pre>
+<p>There are a number of default functions and additional functions can be
+registered.</p>
+<h2 id="row-iteration">Row Iteration</h2>
+<p>Above we define single rows, it is possible to iterate over the row object to
+dynamically create multiple rows.</p>
+<h3 id="with-a-query">With a query</h3>
+<p>You can iterate over a query result:</p>
+<pre><code class="language-javascript">{
+    "rows": [
+        {
+            "cells": [
+                {
+                    "name": "Price",
+                    "expr": "./price"
+                },
+            ],
+            "with_query": "//book"
+        }
+    ]
+}</code></pre>
+<h3 id="with-items">With items</h3>
+<p>Or with &quot;items&quot;, as single values:</p>
+<pre><code class="language-javascript">{
+    "rows": [
+        {
+            "cells": [
+                {
+                    "name": "{{ cell.item }}",
+                    "literal": "{{ cell.item }}"
+                },
+            ],
+            "with_items": [ "hello", "goodbye" ]
+        }
+    ]
+}</code></pre>
+<p>Here a new row will be created for each <code>&lt;book/&gt;</code> element of the source XML
+document.</p>
+<h2 id="cell-iteration">Cell Iteration</h2>
+<p>It is also possible to dynamically create </p>
+                </section>
+
+            </div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p class="text-muted">
+                    website generated with <a href="http://couscous.io" title="Markdown website generator">Couscous</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//yastatic.net/highlightjs/8.2/highlight.min.js"></script>
+
+        <script>
+            $(function() {
+                $("section>h1").wrap('<div class="page-header" />');
+                // Syntax highlighting
+                hljs.initHighlightingOnLoad();
+            });
+        </script>
+
+    </body>
+</html>
