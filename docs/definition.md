@@ -31,6 +31,14 @@ The simplest (well almost the simplest) valid definition is as follows:
 }
 ````
 
+````
+┌───────────────────┐
+│ Cell One          │
+├───────────────────┤
+│ Value of cell one │
+└───────────────────┘
+````
+
 This will produce a table representation with a single row which has a single
 cell with the value `Value of cell one`.
 
@@ -83,13 +91,21 @@ to register custom functions:
                     "expr": "max(//price)"
                 },
                 {
-                    "name": "Maximum Price",
+                    "name": "Average Price",
                     "expr": "average(//price)"
-                },
+                }
             ]
         }
     ]
 }
+````
+
+````
+┌───────────────┬───────────────┬───────────────┐
+│ Minimum Price │ Maximum Price │ Average Price │
+├───────────────┼───────────────┼───────────────┤
+│ 5.00          │ 7             │ 6             │
+└───────────────┴───────────────┴───────────────┘
 ````
 
 There are a number of default functions and additional functions can be
@@ -113,8 +129,8 @@ You can iterate over a query result:
             "cells": [
                 {
                     "name": "Price",
-                    "expr": "./price"
-                },
+                    "expr": "number(./price)"
+                }
             ],
             "with_query": "//book"
         }
@@ -139,7 +155,7 @@ the scalar value can be accessed by `row.item`:
                 {
                     "name": "column_1",
                     "literal": "{{ row.item }}"
-                },
+                }
             ],
             "with_items": [ "hello", "goodbye" ]
         }
@@ -158,7 +174,7 @@ Or with items as associative arrays, where the value can be accessed as
                 {
                     "name": "column_1",
                     "literal": "{{ row.salutation }} {{ row.name }}!"
-                },
+                }
             ],
             "with_items": [ 
                 { "name": "Daniel", "salutation": "Hello" },
@@ -167,6 +183,15 @@ Or with items as associative arrays, where the value can be accessed as
         }
     ]
 }
+````
+
+````
+┌───────────────┐
+│ column_1      │
+├───────────────┤
+│ Hello Daniel! │
+│ Ciao Susan!   │
+└───────────────┘
 ````
 
 You can also use items in association with `with_query`:
@@ -178,18 +203,28 @@ You can also use items in association with `with_query`:
             "cells": [
                 {
                     "name": "Price",
-                    "expr": "./price"
-                },
+                    "expr": "number(./price)"
+                }
             ],
-            "with_query": "//book[price='{{ row.item }}']"
-            "with_items": [ 10, 20, 30 ]
+            "with_query": "//book[price={{ row.item }}]"
+            "with_items": [ 5, 7 ]
         }
     ]
 }
 ````
 
-The above will add rows for each book which has the prices 10, 20 and 30
-respectively.
+The above will add rows for books which have the prices 5 and 7
+respectively, we only have two books which conveniently are priced 5 and 7, so
+we have a table with two rows:
+
+````
+┌───────┐
+│ Price │
+├───────┤
+│ 5     │
+│ 7     │
+└───────┘
+````
 
 Cell Iteration
 --------------
@@ -215,6 +250,14 @@ property within the cell object and using the token within the cell name:
 
 The items above are names of functions, we add a column named after each
 function and use the function to calculate the cell value.
+
+````
+┌─────┬─────────┬──────┬─────┐
+│ sum │ average │ min  │ max │
+├─────┼─────────┼──────┼─────┤
+│ 12  │ 6       │ 5.00 │ 7   │
+└─────┴─────────┴──────┴─────┘
+````
 
 Passes
 ------
@@ -250,22 +293,30 @@ two passes:
             "cells": [
                 {
                     "name": "price",
-                    "expr": "number(./price)"
+                    "expr": "sum(//price)"
                 },
                 {
                     "name": "pass_1",
                     "pass": 1,
-                    "expr": "number(./cell[@name="price"]) * 2"
+                    "expr": "number(./cell[@name='price']) * 2"
                 },
                 {
                     "name": "pass_2",
                     "pass": 2,
-                    "expr": "number(./cell[@name="deviation"]) * 2"
+                    "expr": "number(./cell[@name='pass_1']) * 2"
                 }
             ]
         }
     ]
 }
+````
+
+````
+┌───────┬────────┬────────┐
+│ price │ pass_1 │ pass_2 │
+├───────┼────────┼────────┤
+│ 12    │ 24     │ 48     │
+└───────┴────────┴────────┘
 ````
 
 Groups
@@ -286,7 +337,7 @@ chapter:
                 {
                     "name": "value",
                     "literal": "{{ row.item }}"
-                },
+                }
             ],
             "with_items": [ 1, 1, 2, 3, 5, 8 ]
         },
@@ -296,7 +347,11 @@ chapter:
                 {
                     "name": "value",
                     "pass": 1,
-                    "expr": "sum(//group[@name="body"]//cell[@name="value")"
+                    "expr": "sum(//group[@name='body']//cell[@name='value'])"
+                },
+                {
+                    "name": "",
+                    "literal": "<< Total"
                 }
             ]
         }
@@ -316,18 +371,35 @@ The generated table XML would look as follows:
     <group name="body">
         <row>
             <cell name="value">1</cell>
+            <cell name=""></cell>
         </row>
         <row>
             <cell name="value">1</cell>
+            <cell name=""></cell>
         </row>
         <!-- ... -->
     </group>
     <group name="footer">
         <row>
             <cell name="value">20</cell>
+            <cell name=""><< Total</cell>
         </row>
     </group>
 </table>
+````
+
+````
+┌───────┬──────────┐
+│ value │          │
+├───────┼──────────┤
+│ 1     │          │
+│ 1     │          │
+│ 2     │          │
+│ 3     │          │
+│ 5     │          │
+│ 8     │          │
+│ 20    │ << Total │
+└───────┴──────────┘
 ````
 
 If no groups are specified, then the default group name is used, which is:
@@ -344,19 +416,19 @@ top level and each cell can specify a class to use:
 {
     "classes": {
         "euro": [
-            [ "printf", { "format": "€%2d" } ]
-            [ "printf", { "format": "%s please" } ]
+            [ "printf", { "format": "€%2d" } ],
+            [ "printf", { "format": "%s please" } ],
             [ "printf", { "format": "Can I have %s?" } ]
         ]
     },
     "rows": [
         {
-            "class": "euro",
             "cells": [
                 {
                     "name": "value",
+                    "class": "euro",
                     "literal": "{{ row.item }}"
-                },
+                }
             ],
             "with_items": [ 1, 1, 2, 3 ]
         }
@@ -367,6 +439,17 @@ top level and each cell can specify a class to use:
 Above we define the class `euro`, which will process the original cell value
 through three formatters, eventually the number in each cell will look like
 `Can I have €<cell value> please?`.
+
+````
+┌────────────────────────┐
+│ value                  │
+├────────────────────────┤
+│ Can I have € 1 please? │
+│ Can I have € 1 please? │
+│ Can I have € 2 please? │
+│ Can I have € 3 please? │
+└────────────────────────┘
+````
 
 Sorting
 -------
@@ -382,7 +465,7 @@ Tables can be sorted on a per-group basis, for example:
                 {
                     "name": "value",
                     "literal": "{{ row.item }}"
-                },
+                }
             ],
             "with_items": [ 1, 1, 2, 3 ]
         }
@@ -410,8 +493,8 @@ provide a way for the end user to change these variables.
             "cells": [
                 {
                     "name": "value",
-                    "literal": "./title"
-                },
+                    "expr": "string(./title)"
+                }
             ],
             "with_query": "{{ param.selector }}"
         }
@@ -428,10 +511,22 @@ in the report as follows:
 ````php
 <?php
 
-$table = Tabular::getInstance()->tabular($sourceXml, 'my_definition.json',
-array(
-    'selector' => '//books[price > 5]',
-));
+$table = Tabular::getInstance()->tabulate(
+    $sourceXml, 
+    'my_definition.json', 
+    array(
+        'selector' => '//book[price > 5]',
+    )
+);
+
+print_r($table);
+// array(1) {
+//   [0] =>
+//   array(1) {
+//     'value' =>
+//     string(30) "One Hundered Years of Soliture"
+//   }
+// }
 ````
 
 Includes
@@ -447,7 +542,7 @@ Given there exists the file `classes.json`:
 {
     "classes": {
         "number": [
-            [ "number_format" ]
+            [ "number" ]
         ],
         "green": [
             [ "printf", {"format": "<green>%s</green>"} ]
@@ -462,10 +557,16 @@ We can include it as follows:
 {
     "includes": [
         [ "classes.json", [ "classes" ] ]
-    ]
+    ],
     "rows": [
         {
-            "cells": []
+            "cells": [
+                {
+                    "name": "one",
+                    "literal": "10000",
+                    "class": "number"
+                }
+            ]
         }
     ]
 }
@@ -473,3 +574,11 @@ We can include it as follows:
 
 The first element in the tuple is the name of the file (relative to the
 current file), the second is the list of keys to import from it.
+
+````
+┌────────┐
+│ one    │
+├────────┤
+│ 10,000 │
+└────────┘
+````

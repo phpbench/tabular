@@ -5,7 +5,7 @@ Tabular is a PHP library for generating table data structures (e.g. an
 invoice, a report) from an XML data source.
 
 If you ever thought "I could do this task in a spreadsheet, but doing it in
-code is a pain in the ass" then this library is for you.
+code is a pain in the ass and completely unmaintainable" then this library is for you.
 
 It allows you to:
 
@@ -86,7 +86,19 @@ So given the following XML file:
 </store>
 ````
 
-We can generate an array of tabular data as follows:
+The generated table might look like this (as rendered by the Tabular CLI):
+
+````
+┌────────────────────────────────┬───────┐
+│ title                          │ price │
+├────────────────────────────────┼───────┤
+│ War and Peace                  │ 5     │
+│ One Hundered Years of Soliture │ 7     │
+│                                │ 12    │
+└────────────────────────────────┴───────┘
+````
+
+The necessary code is as follows:
 
 ````php
 use PhpBench\Tabular\Tabular;

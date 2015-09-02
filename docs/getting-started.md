@@ -5,7 +5,7 @@ Tabular is meant to be used as a dependency to your project.
 
 If you just want to experiment with the what the library can do then check out
 the [tabular CLI](https://github.com/phpbench/tabular-cli), have a look at
-the examples there checkout the
+the examples there and read the
 [definition](definition.md) chapter. Otherwise you can continue to install
 Tabular as a dependency in your project.
 
@@ -36,6 +36,10 @@ control you can wire it up manually (preferably using a dependency injection
 container):
 
 ````php
+<?php
+
+require_once(__DIR__ . '/vendor/autoload.php');
+
 use PhpBench\Tabular\Formatter\Registry\ArrayRegistry;
 use PhpBench\Tabular\Formatter\Format\PrintfFormat;
 use PhpBench\Tabular\Formatter;
@@ -43,12 +47,13 @@ use PhpBench\Tabular\TableBuilder;
 use PhpBench\Tabular\Definition\Loader;
 use PhpBench\Tabular\Definition\Expander;
 use PhpBench\Tabular\Dom\XPathResolver;
+use PhpBench\Tabular\Tabular;
 
 $functionRegistry = new ArrayRegistry();
 $functionRegistry->register('printf', new PrintfFormat());
 // ...
 
-$formatter = new Formatter($registry);
+$formatter = new Formatter($functionRegistry);
 
 $xpathResolver = new XPathResolver();
 $xpathResolver->registerFunction('foo', 'foo_function');
