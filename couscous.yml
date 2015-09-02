@@ -1,0 +1,42 @@
+template:
+    url: https://github.com/CouscousPHP/Template-Dark
+
+# Base URL of the published website (no "/" at the end!)
+# You are advised to set and use this variable to write your links in the HTML layouts
+baseUrl: http://phpbench.github.io/tabular
+
+github:
+    user: phpbench
+    repo: tabular
+
+title: Tabular 
+subTitle: Better than spreadsheets
+
+# The left menu bar
+menu:
+    sections:
+        home:
+            name: About
+            items:
+                home:
+                    text: Home
+                    relativeUrl: .
+        main:
+            name: Documentation
+            items:
+                introduction:
+                    text: Introduction
+                    # You can use relative urls
+                    relativeUrl: docs/introduction.html
+                getting-started:
+                    text: Getting Started
+                    relativeUrl: docs/getting-started.html
+                definition:
+                    text: Definition
+                    relativeUrl: docs/definition.html
+                xpath_functions:
+                    text: XPath Functions
+                    relativeUrl: docs/xpath_functions.html
+                formatters:
+                    text: Formatters
+                    relativeUrl: docs/formatters.html

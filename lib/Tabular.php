@@ -76,6 +76,11 @@ class Tabular
         return new self($tableBuilder, $loader, $formatter, $expander);
     }
 
+    public function getFormatter()
+    {
+        return $this->formatter;
+    }
+
     /**
      * Process the source document using the given Tabular definition and return a table document.
      *

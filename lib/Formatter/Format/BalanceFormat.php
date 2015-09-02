@@ -28,13 +28,13 @@ class BalanceFormat implements FormatInterface
             return sprintf($options['positive_format'], $subject);
         }
 
-        return sprintf($options['neutral_format'], $subject);
+        return sprintf($options['zero_format'], $subject);
     }
 
     public function getDefaultOptions()
     {
         return array(
-            'neutral_format' => '%s',
+            'zero_format' => '%s',
             'negative_format' => '-%s',
             'positive_format' => '+%s',
         );
