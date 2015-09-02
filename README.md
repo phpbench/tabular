@@ -14,9 +14,9 @@ Tabular is better than spreadsheets.
 Documentation
 -------------
 
-- [Introduction](docs/introduction.html): What is this thing?.
-- [Getting Started](docs/getting-started.html): How do I use it?.
-- [Definition](docs/definition.html): Reference for tabular definitions.
-- [XPath Functions](docs/xpath_functions.html): Reference for tabular XPath
+- [Introduction](http://phpbench.github.io/tabular/docs/introduction.html): What is this thing?.
+- [Getting Started](http://phpbench.github.io/tabular/docs/getting-started.html): How do I use it?.
+- [Definition](http://phpbench.github.io/tabular/docs/definition.html): Reference for tabular definitions.
+- [XPath Functions](http://phpbench.github.io/tabular/docs/xpath_functions.html): Reference for tabular XPath
   functions.
-- [Formatters](docs/formatters.html): Tabular class formatters.
+- [Formatters](http://phpbench.github.io/tabular/docs/formatters.html): Tabular class formatters.
