@@ -53,7 +53,6 @@ which acts upon the given XML source document.
     "rows": [
         {
             "cells": [
-                // ...
                 {
                     "name": "Evaluated Cell",
                     "expr": "sum(//price)"
@@ -94,7 +93,8 @@ to register custom functions:
 ````
 
 There are a number of default functions and additional functions can be
-registered.
+registered. See the [xpath functions](xpath_functions.md) chapter for more
+information.
 
 Row Iteration
 -------------
@@ -123,11 +123,13 @@ You can iterate over a query result:
 ````
 
 Here a new row will be created for each `<book/>` element of the source XML
-document.
+document and the cell expressions will be relative to the DOMNode representing
+the row.
 
 ### With items
 
-Or with "items", as single values:
+Alternatively you can iterate over a "static" set of  "items", either as scalar values - in which case
+the scalar value can be accessed by `row.item`:
 
 ````javascript
 {
@@ -145,7 +147,8 @@ Or with "items", as single values:
 }
 ````
 
-Or with items as associative arrays:
+Or with items as associative arrays, where the value can be accessed as
+`row.<key>`:
 
 ````javascript
 {
@@ -166,7 +169,7 @@ Or with items as associative arrays:
 }
 ````
 
-You can also use item tokens in the `with_query` query:
+You can also use items in association with `with_query`:
 
 ````javascript
 {
@@ -218,14 +221,27 @@ Passes
 
 Sometimes it is desirable to evaluate cell values based on already evaluated
 cell values. This can be done using the *pass* feature. Expressions which use
-a pass operate on the table DOM document rather than the orignal XML source.
+a pass operate on the DOM of the table representation rather than the orignal XML source.
 
-Cells are evaluated in subsequent passes if the `pass` property is used. The
-value must be an integer, lower numbers are executed before higher numbers,
-they need not be contiguous.
+The table definition XML upon which the expression will be evaluated looks as
+follows:
+
+````xml
+<table>
+    <group name="...">
+        <row>
+            <cell name="...">...</cell>
+        </row>
+    </group>
+</table>
+````
+
+Cells are evaluated in subsequent passes if the `pass` property is used on the
+cell object. The value must be an integer, lower numbers are executed before
+higher numbers, they need not be contiguous.
 
 The following will evaluate the values for cells `pass_1` and `pass_2` in
-two additional passes:
+two passes:
 
 ````javascript
 {
@@ -290,7 +306,7 @@ chapter:
 
 Note that in the expression in the footer we explicitly specify the name of
 the group in the query. This is beause otherwise the `sum` will take into
-account the value of the footer column, which would result in an `NAN` (not a
+account the value of the footer column, which would result in a `NAN` (not a
 number) error.
 
 The generated table XML would look as follows:
@@ -377,7 +393,7 @@ Tables can be sorted on a per-group basis, for example:
 }
 ````
 
-The group name is prefixed before the `#` delimter. If on group name is given
+The group name is prefixed before the `#` delimter. If no group name is given
 then the default group will be used.
 
 Parameters
@@ -434,7 +450,7 @@ Given there exists the file `classes.json`:
             [ "number_format" ]
         ],
         "green": [
-            [ "printf", {"format": "<green>%s</green>" ]
+            [ "printf", {"format": "<green>%s</green>"} ]
         ]
     }
 }

@@ -4,6 +4,9 @@ Introduction
 Tabular is a PHP library for generating table data structures (e.g. an
 invoice, a report) from an XML data source.
 
+If you ever thought "I could do this task in a spreadsheet, but doing it in
+code is a pain in the ass" then this library is for you.
+
 It allows you to:
 
 - Define a configuration which dynamically creates table *rows* composed of
@@ -15,8 +18,6 @@ It allows you to:
   passes.
 - Format cells using pre-configured and custom formatters.
 - Define parameters which can be passed at the time of generation.
-
-It aims to be functionally equivalent to a spreadsheet.
 
 It accepts a source XML document and a Tabular JSON definition file, it gives
 back an XML file structured as a table which can then be used in anyway you

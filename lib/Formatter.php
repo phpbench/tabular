@@ -26,6 +26,11 @@ class Formatter
         $this->registry = $registry ?: new ArrayRegistry();
     }
 
+    public function getRegistry()
+    {
+        return $this->registry;
+    }
+
     public function formatTable(TableDom $document)
     {
         $document->formatOutput = true;
