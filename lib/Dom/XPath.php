@@ -15,7 +15,15 @@ class XPath extends \DOMXPath
 {
     public function evaluate($expr, \DOMNode $contextEl = null, $registerNodeNs = null)
     {
-        return $this->execute('evaluate', 'expression', $expr, $contextEl, $registerNodeNs);
+        $result = $this->execute('evaluate', 'expression', $expr, $contextEl, $registerNodeNs);
+
+        if (!is_scalar($result)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Expression should evaluate to a scalar: %s', $expr
+            ));
+        }
+
+        return $result;
     }
 
     public function query($expr, \DOMNode $contextEl = null, $registerNodeNs = null)

@@ -40,4 +40,16 @@ class XPathTest extends \PHPUnit_Framework_TestCase
         $xpath = new XPath($dom);
         $xpath->query('asdf))()');
     }
+
+    /**
+     * It should throw an exception if an expression returns an object
+     *
+     * @expectedException InvalidArgumentException
+     */
+    public function testExpressionReturnsAnObject()
+    {
+        $dom = new \DOMDocument('1.0');
+        $xpath = new XPath($dom);
+        $xpath->evaluate('//book');
+    }
 }
