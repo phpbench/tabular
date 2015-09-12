@@ -42,7 +42,7 @@ class XPathTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should throw an exception if an expression returns an object
+     * It should throw an exception if an expression returns an object.
      *
      * @expectedException InvalidArgumentException
      */
