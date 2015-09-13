@@ -14,7 +14,7 @@ Tabular is better than spreadsheets.
 Documentation
 -------------
 
-See the [official documentation](http://tabular.readthedocs.org/en/latest).
+See the [official documentation](http://tabular.readthedocs.org).
 
 Example
 -------
@@ -47,6 +47,7 @@ The central concept is the definition file:
         }
     ]
 }
+````
 
 The above definition will generate a table representation in XML with a row
 for each `<book/>` element in the given XML file and provide an additional row
@@ -66,8 +67,10 @@ So given the following XML file:
             <price>7</price>
         </book>
     </store>
+````
 
-The generated table might look like this (as rendered by the Tabular CLI):
+The generated table might look like this (as rendered by the [Tabular
+CLI](https://github.com/phpbench/tabular-cli)):
 
 ```
 ┌────────────────────────────────┬───────┐
