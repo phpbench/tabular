@@ -81,3 +81,5 @@ This can also be used effectively with ``average`` function::
     deviation(average(//price), ./price)
 
 Will show the deviation of the price from the average value.
+
+.. _XPath 1.0 functions: https://developer.mozilla.org/en-US/docs/Web/XPath/Functions

@@ -39,6 +39,8 @@ You will need to add the formatter to the ``PhpBench\Tabular\Formatter\RegistryI
 
 .. code-block:: php
 
+    <?php
+
     $myPrintf = new PrintfFormat();
     $tabular = Tabular::getInstance();
     $tabular->getFormatter()->getRegistry()->register('my_printf', $myPrintf);

@@ -13,8 +13,8 @@ file](definition.md).
 ``printf``
 ----------
 
-The ``printf`` formatter uses, can you guess?, PHP's
-``printf <http://php.net/manual/en/function.printf.php>``_ function.
+The ``printf`` formatter uses PHP's
+`printf <http://php.net/manual/en/function.printf.php>`_ function.
 
 Options:
 
