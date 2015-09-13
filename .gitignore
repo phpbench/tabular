@@ -1,3 +1,4 @@
 composer.lock
 vendor
-docs/.couscous
+docs/_build
+
