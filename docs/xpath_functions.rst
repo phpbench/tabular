@@ -1,19 +1,13 @@
 XPath Functions
 ===============
 
-Standard Functions
-------------------
-
-You can use all of the standard `XPath 1.0 functions`_.
-
-Tabular Functions
------------------
-
-Tabular extends the default XPath function set by leveraging string
+You can use all of the standard `XPath 1.0 functions`_, in addition
+Tabular extends the default function set by leveraging string
 manipulation and PHP's
 `registerphpfunctions <http://php.net/manual/en/domxpath.registerphpfunctions.php>`_ method of the DOM
-XPath class.
+XPath class. This chapter documents the default functions.
 
+.. _xpathfuncaverage:
 
 ``average``
 ~~~~~~~~~~~
@@ -30,6 +24,8 @@ Example::
 
 Will return the average price.
 
+.. _xpathfuncmin:
+
 ``min``
 ~~~~~~~
 
@@ -40,6 +36,8 @@ Example::
     min(//price)
 
 Will return the minimum price.
+
+.. _xpathfuncmax:
 
 ``max``
 ~~~~~~~
@@ -52,6 +50,8 @@ Example::
 
 Will return the minimum price.
 
+.. _xpathfuncmedian:
+
 ``median``
 ~~~~~~~~~~
 
@@ -62,6 +62,8 @@ Example::
     median(//price)
 
 Will return the median price.
+
+.. _xpathfuncdeviation:
 
 ``deviation``
 ~~~~~~~~~~~~~
@@ -114,6 +116,6 @@ We can then register the function with the XPath instance:
 
 It is recommended that you insantiate Tabular within a dependency injection
 container so that you have access to the XPathResolver class. See
-:doc:`getting started <getting-started.rst>`.
+:doc:`getting started <getting-started>`.
 
 .. _XPath 1.0 functions: https://developer.mozilla.org/en-US/docs/Web/XPath/Functions

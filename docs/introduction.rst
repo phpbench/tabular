@@ -2,10 +2,8 @@ Introduction
 ============
 
 Tabular is a PHP library for generating table data structures (e.g. an
-invoice, a report) from an XML data source.
-
-If you ever thought "I could do this task in a spreadsheet, but doing it in
-code is a pain in the ass and completely unmaintainable" then this library is for you.
+invoice, a report) from an XML data source using expressions,
+self-reference and more.
 
 It allows you to:
 
@@ -26,9 +24,8 @@ would like.
 Why?
 ----
 
-You could generate tabular data only with PHP, but as anybody who has ever
-tried this can testify this results in a nightmare of variables and spaghetti
-code.
+You could generate complex tabular data only with PHP, but beyond a certain
+threshold this results in a nightmare of variables and spaghetti code.
 
 You could do generate reports with XSLT transformations, but I think this is hugely
 verbose and detached from the familiar PHP environment.

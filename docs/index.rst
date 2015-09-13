@@ -16,8 +16,7 @@ Contents:
    definition
    xpath_functions
    formatters
-
-
+   extending
 
 Indices and tables
 ==================

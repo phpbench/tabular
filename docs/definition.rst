@@ -9,13 +9,13 @@ The JSON definition is very strict, but do not fear. It is validated against a J
 which provides accurate clues as to what goes wrong, when it goes wrong.
 
 Some of the Tabular definition file has been influenced by
-[Ansible](http://ansible.com).
+`Ansible <http://ansible.com>`_.
 
 Rows
 ----
 
 In Tabular you define row *prototypes* which will be expanded into the final
-table row data.
+table representation.
 
 The simplest (well almost the simplest) valid definition is as follows:
 
@@ -34,7 +34,8 @@ The simplest (well almost the simplest) valid definition is as follows:
         ]
     }
 
-Which yields::
+This will produce a table representation with a single row which has a single
+cell with the value ``Value of cell one``::
 
     ┌───────────────────┐
     │ Cell One          │
@@ -42,16 +43,14 @@ Which yields::
     │ Value of cell one │
     └───────────────────┘
 
-This will produce a table representation with a single row which has a single
-cell with the value `Value of cell one`.
 
-- The `rows` property is an array of "row" *objects*.
+- The ``rows`` property is an array of "row" *objects*.
 
 - Each row object can defines a single or a potential set of rows, depending on if
-*iteration* is used (`with_query`, `with_items`).  More on this later.
+  *iteration* is used (``with_query``, ``with_items``).  More on this later.
 
-- Each row must deifine the `cells` property which should contain an array of
-*cell* objects. This object can be empty which will create an empty row.
+- Each row must deifine the ``cells`` property which should contain an array of
+  *cell* objects. This object can be empty which will create an empty row.
 
 Expressions
 -----------
@@ -74,11 +73,13 @@ which acts upon the given XML source document.
         ]
     }
 
-The `expr` property is an XPath expression, and will return the sum total of
+The ``expr`` property is an XPath expression, and will return the sum total of
 all the `<price/>` node values.
 
-Tabular leverages the `register_php_functions` feature of PHP's XPath object
-to register custom functions:
+Tabular leverages the
+`registerphpfunctions <http://php.net/manual/en/domxpath.registerphpfunctions.php>`_ feature of PHP's XPath object
+to register custom functions. The following example shows the use of the
+:ref:`xpathfuncmin`, :ref:`xpathfuncmax` and :ref:`xpathfuncaverage`:
 
 .. code-block:: javascript
 
@@ -111,15 +112,14 @@ Which yields::
     │ 5.00          │ 7             │ 6             │
     └───────────────┴───────────────┴───────────────┘
 
-There are a number of default functions and additional functions can be
-registered. See the [xpath functions](xpath_functions.md) chapter for more
-information.
+See the :doc:`xpath functions <xpath_functions>` chapter for more information
+on available functions.
 
 Row Iteration
 -------------
 
-Above we define single rows, it is possible to iterate over the row object to
-dynamically create multiple rows.
+Above we define single rows but it is also possible to iterate over the same
+row object and dynamically create multiple rows.
 
 With a query
 ~~~~~~~~~~~~
@@ -142,15 +142,15 @@ You can iterate over a query result:
         ]
     }
 
-Here a new row will be created for each `<book/>` element of the source XML
+Here a new row will be created for each ``<book/>`` element of the source XML
 document and the cell expressions will be relative to the DOMNode representing
 the row.
 
 With items
 ~~~~~~~~~~
 
-Alternatively you can iterate over a "static" set of  "items", either as scalar values - in which case
-the scalar value can be accessed by `row.item`:
+Alternatively you can iterate over a "static" set of "items", either as scalar values - in which case
+the scalar value can be accessed by ``row.item``:
 
 .. code-block:: javascript
 
@@ -280,11 +280,11 @@ follows:
         </group>
     </table>
 
-Cells are evaluated in subsequent passes if the `pass` property is used on the
+Cells are evaluated in subsequent passes if the ``pass`` property is used on the
 cell object. The value must be an integer, lower numbers are executed before
 higher numbers, they need not be contiguous.
 
-The following will evaluate the values for cells `pass_1` and `pass_2` in
+The following will evaluate the values for cells ``pass_1`` and ``pass_2`` in
 two passes:
 
 .. code-block:: javascript
@@ -361,8 +361,8 @@ chapter:
     }
 
 Note that in the expression in the footer we explicitly specify the name of
-the group in the query. This is beause otherwise the `sum` will take into
-account the value of the footer column, which would result in a `NAN` (not a
+the group in the query. This is beause otherwise the ``sum`` will take into
+account the value of the footer column, which would result in a ``NAN`` (not a
 number) error.
 
 The generated table XML would look as follows:
@@ -437,7 +437,7 @@ top level and each cell can specify a class to use:
         ]
     }
 
-Above we define the class `euro`, which will process the original cell value
+Above we define the class ``euro``, which will process the original cell value
 through three formatters, eventually the number in each cell will look like
 `Can I have €<cell value> please?`::
 
@@ -535,7 +535,7 @@ Includes allow you to merge parts of other definition files into the including
 definition. A common use case might to be to include a common set of classes
 into many definitions.
 
-Given there exists the file `classes.json`:
+Given there exists the file ``classes.json``:
 
 .. code-block:: javascript
 

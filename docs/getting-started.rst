@@ -4,17 +4,22 @@ Getting Started
 Tabular is meant to be used as a dependency to your project. 
 
 If you just want to experiment with the what the library can do then check out
-the [tabular CLI](https://github.com/phpbench/tabular-cli), have a look at
+the `Tabular CLI <https://github.com/phpbench/tabular-cli>`_, have a look at
 the examples there and read the
-[definition](definition.md) chapter. Otherwise you can continue to install
+:doc:`definition <definition.rst>` chapter. Otherwise you can continue to install
 Tabular as a dependency in your project.
 
-Install it with
-composer:
+Installation
+------------
+
+Install it with composer:
 
 .. code-block:: bash
 
     $ composer require phpbench/tabular
+
+Quick Instantiation
+-------------------
 
 A default instance of Tabular can be obtained using the static `getInstance`
 method:
@@ -30,8 +35,8 @@ method:
 But for any reasonable project it is recommended that you wire it up using a
 dependency injection container.
 
-Wiring it up
-------------
+Manual Instantiation
+--------------------
 
 Using `getInstance` is a quick way to get started, but if you want more
 control you can wire it up manually (preferably using a dependency injection
