@@ -14,9 +14,67 @@ Tabular is better than spreadsheets.
 Documentation
 -------------
 
-- [Introduction](http://phpbench.github.io/tabular/docs/introduction.html): What is this thing?.
-- [Getting Started](http://phpbench.github.io/tabular/docs/getting-started.html): How do I use it?.
-- [Definition](http://phpbench.github.io/tabular/docs/definition.html): Reference for tabular definitions.
-- [XPath Functions](http://phpbench.github.io/tabular/docs/xpath_functions.html): Reference for tabular XPath
-  functions.
-- [Formatters](http://phpbench.github.io/tabular/docs/formatters.html): Tabular class formatters.
+See the [official documentation](http://tabular.readthedocs.org/en/latest).
+
+Example
+-------
+
+The central concept is the definition file:
+
+```javascript
+{
+    "rows": [
+        {
+            "cells": [
+                {
+                    "name": "title",
+                    "expr": "string(./title)"
+                },
+                {
+                    "name": "price",
+                    "expr": "number(./price)"
+                }
+            ],
+            "with_query": "//book"
+        },
+        {
+            "cells": [
+                {
+                    "name": "price",
+                    "expr": "sum(//price)"
+                }
+            ]
+        }
+    ]
+}
+
+The above definition will generate a table representation in XML with a row
+for each `<book/>` element in the given XML file and provide an additional row
+showing the sum of all the `<price/>` elements of the `<book/>` element.
+
+So given the following XML file:
+
+```xml
+    <?xml version="1.0"?>
+    <store>
+        <book>
+            <title>War and Peace</title>
+            <price>5.00</price>
+        </book>
+        <book>
+            <title>One Hundered Years of Soliture</title>
+            <price>7</price>
+        </book>
+    </store>
+
+The generated table might look like this (as rendered by the Tabular CLI):
+
+```
+┌────────────────────────────────┬───────┐
+│ title                          │ price │
+├────────────────────────────────┼───────┤
+│ War and Peace                  │ 5     │
+│ One Hundered Years of Soliture │ 7     │
+│                                │ 12    │
+└────────────────────────────────┴───────┘
+```
