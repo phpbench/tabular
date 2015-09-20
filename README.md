@@ -1,6 +1,8 @@
 Tabular
 =======
 
+![tabularlogo-2](https://cloud.githubusercontent.com/assets/530801/9979505/11e271ce-5f71-11e5-85e1-b76b17b06609.png)
+
 [![Build Status](https://travis-ci.org/phpbench/tabular.svg?branch=master)](https://travis-ci.org/phpbench/tabular)
 [![StyleCI](https://styleci.io/repos/40823691/shield)](https://styleci.io/repos/40823691)
 
