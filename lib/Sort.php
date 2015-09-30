@@ -73,6 +73,11 @@ class Sort
 
         foreach ($groups as $group => $rowEls) {
             $groupEl = $tableDom->xpath()->query('//group[@name="' . $group . '"]')->item(0);
+
+            if (!$groupEl) {
+                continue;
+            }
+
             foreach ($groupEl->childNodes as $childNode) {
                 $groupEl->removeChild($childNode);
             }

@@ -45,6 +45,34 @@ class SortTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * It should not crash if a table has no rows
+     */
+    public function testNoRowsNoCrash()
+    {
+        $table = $this->createTable(<<<EOT
+<?xml version="1.0"?>
+<table>
+</table>
+EOT
+        );
+        Sort::sortTable($table, array('foobar' => 'asc'));
+    }
+
+    /**
+     * It should not crash if a table has no rows in a specified group
+     */
+    public function testNoRowsNoCrashGroup()
+    {
+        $table = $this->createTable(<<<EOT
+<?xml version="1.0"?>
+<table>
+</table>
+EOT
+        );
+        Sort::sortTable($table, array('group#foobar' => 'asc'));
+    }
+
+    /**
      * It should sort a table.
      */
     public function testSortTable()
