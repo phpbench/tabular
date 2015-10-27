@@ -45,7 +45,7 @@ class SortTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * It should not crash if a table has no rows
+     * It should not crash if a table has no rows.
      */
     public function testNoRowsNoCrash()
     {
@@ -59,7 +59,7 @@ EOT
     }
 
     /**
-     * It should not crash if a table has no rows in a specified group
+     * It should not crash if a table has no rows in a specified group.
      */
     public function testNoRowsNoCrashGroup()
     {
