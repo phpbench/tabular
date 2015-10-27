@@ -17,7 +17,7 @@ namespace PhpBench\Tabular;
 class Definition extends \ArrayObject
 {
     /**
-     * @var integer[]
+     * @var int[]
      */
     private $passes = array();
 
@@ -66,7 +66,7 @@ class Definition extends \ArrayObject
     /**
      * Return the compiler pass numbers.
      *
-     * @return integer[]
+     * @return int[]
      */
     public function getPasses()
     {
