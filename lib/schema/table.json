@@ -81,7 +81,10 @@
                                 "type": "string"
                             },
                             {
-                                "type": "object"
+                                "oneOf": [
+                                    { "type": "object" },
+                                    { "type": "array" }
+                                ]
                             }
                         ]
                     }
