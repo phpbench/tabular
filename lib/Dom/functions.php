@@ -14,7 +14,6 @@
  * Note that attempting to use a static class for this purpose does not work, it
  * would seem that only functions can be registered in an XPath instance.
  */
-
 namespace PhpBench\Tabular\Dom\functions;
 
 /**
@@ -150,6 +149,7 @@ function deviation($standardValue, $actualValue)
 }
 
 /**
+ * Convert a DOMNodeList into an array.
  */
 function getValues($values)
 {
@@ -172,6 +172,7 @@ function getValues($values)
 }
 
 /**
+ * Return a single value from a DOMNodeList.
  */
 function getValue($value)
 {

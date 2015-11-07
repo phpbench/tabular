@@ -11,6 +11,7 @@
 
 namespace PhpBench\Tabular\Tests\Unit\Dom;
 
+use PhpBench\Tabular\Dom\XPath;
 use PhpBench\Tabular\Dom\XPathResolver;
 
 class XPathResolverTest extends \PHPUnit_Framework_TestCase

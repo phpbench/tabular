@@ -47,3 +47,20 @@ depending on if the value is negative, zero or positive.
   ``-``).
 - **positive_format**: ``printf`` format to use when value is positive (default
   ``+``).
+
+``truncate``
+------------
+
+Truncate the cell value to a given length.
+
+Options:
+
+- **length**: Truncation length (default ``50``).
+- **position**: Truncate string one of ``left``, ``right``, or ``middle``.
+- **pad**: String used to indicate that the string has been
+  truncated (default ``...``).
+
+``json_format``
+---------------
+
+Pretty format a JSON string.
