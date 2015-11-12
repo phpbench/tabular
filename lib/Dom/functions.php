@@ -26,7 +26,7 @@ namespace PhpBench\Tabular\Dom\functions;
 function sum($values)
 {
     $sum = 0;
-    foreach (getValues($values) as $value) {
+    foreach (values($values) as $value) {
         $sum += $value;
     }
 
@@ -43,7 +43,7 @@ function sum($values)
 function min($values)
 {
     $min = null;
-    foreach (getValues($values) as $value) {
+    foreach (values($values) as $value) {
         if (null === $min || $value < $min) {
             $min = $value;
         }
@@ -62,7 +62,7 @@ function min($values)
 function max($values)
 {
     $max = null;
-    foreach (getValues($values) as $value) {
+    foreach (values($values) as $value) {
         if (null === $max || $value > $max) {
             $max = $value;
         }
@@ -84,7 +84,7 @@ function mean($values)
         return 0;
     }
 
-    $values = getValues($values);
+    $values = values($values);
 
     $sum = sum($values);
 
@@ -110,7 +110,7 @@ function median($values)
         return 0;
     }
 
-    $values = getValues($values);
+    $values = values($values);
 
     sort($values);
     $nbValues = count($values);
@@ -133,7 +133,7 @@ function median($values)
  */
 function deviation($standardValue, $actualValue)
 {
-    $actualValue = getValue($actualValue);
+    $actualValue = value($actualValue);
 
     if (0 == $standardValue) {
         return $actualValue;
@@ -151,12 +151,20 @@ function deviation($standardValue, $actualValue)
 /**
  * Convert a DOMNodeList into an array.
  */
-function getValues($values)
+function values($values, $attr = null)
 {
     $newValues = array();
     foreach ($values as $value) {
+        if ($value instanceof \DOMDocumentFragment) {
+            $value = $value->firstChild;
+        }
+
         if ($value instanceof \DOMNode) {
-            $value = $value->nodeValue;
+            if ($attr) {
+                $value = $value->getAttribute($attr);
+            } else {
+                $value = $value->nodeValue;
+            }
         }
 
         if (!is_scalar($value)) {
@@ -174,9 +182,9 @@ function getValues($values)
 /**
  * Return a single value from a DOMNodeList.
  */
-function getValue($value)
+function value($value)
 {
-    $values = getValues(array($value));
+    $values = values(array($value));
 
     return reset($values);
 }

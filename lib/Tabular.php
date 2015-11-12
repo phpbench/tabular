@@ -94,7 +94,7 @@ class Tabular
      */
     public function tabulate(\DOMDocument $sourceDom, $definition, array $parameters = array())
     {
-        $definition = $this->definitionLoader->load($definition);
+        $definition = $this->definitionLoader->load($definition, $sourceDom);
 
         if (isset($definition['params'])) {
             $parameters = array_merge(

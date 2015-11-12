@@ -149,6 +149,7 @@ class Expander
             $cellName = $cellDefinition['name'];
 
             $cellItems = array(null);
+
             if (isset($cellDefinition['with_items'])) {
                 $cellItems = $cellDefinition['with_items'];
             }

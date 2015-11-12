@@ -149,7 +149,7 @@ the row.
 With items
 ~~~~~~~~~~
 
-Alternatively you can iterate over a "static" set of "items", either as scalar values - in which case
+Alternatively you can iterate over a set of "items", either as scalar values - in which case
 the scalar value can be accessed by ``row.item``:
 
 .. code-block:: javascript
@@ -245,7 +245,7 @@ property within the cell object and using the token within the cell name:
                         "name": "{{ cell.item }}",
                         "expr": "{{ cell.item }}(//price)",
                         "with_items": [ "sum", "average", "min", "max"  ]
-                    },
+                    }
                 ]
             }
         ]
@@ -259,6 +259,31 @@ function and use the function to calculate the cell value::
     ├─────┼─────────┼──────┼─────┤
     │ 12  │ 6       │ 5.00 │ 7   │
     └─────┴─────────┴──────┴─────┘
+
+In addition to iterating over a static set of items you can iterate over a
+query on the source document:
+
+.. code-block:: javascript
+
+    {
+        "rows": [
+            {
+                "cells": [
+                    {
+                        "name": "{{ cell.item }}",
+                        "literal": "Hello {{ cell.item }}",
+                        "with_items": {
+                            "selector": "//person",
+                            "value": "string(./@name)"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+
+Above we iterate over each `<person/>` element and use the `@name` attribute
+as the `cell.item` value.
 
 Passes
 ------
