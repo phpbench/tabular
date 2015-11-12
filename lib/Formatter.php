@@ -77,7 +77,16 @@ class Formatter
             }
 
             $options = array_merge($defaultOptions, $options);
-            $value = $formatter->format($value, $options);
+
+            try {
+                $value = $formatter->format($value, $options);
+            } catch (\Exception $e) {
+                throw new \RuntimeException(sprintf(
+                    'Error encountered formatting cell "%s" with value "%s"',
+                    $cellEl->getAttribute('name'),
+                    print_r($cellEl->nodeValue, true)
+                ), null, $e);
+            }
         }
 
         $cellEl->nodeValue = $value;
