@@ -118,5 +118,8 @@ class XPathResolver
         $this->registerFunction('median', 'PhpBench\Tabular\Dom\functions\median');
         $this->registerFunction('truncate', 'PhpBench\Tabular\Dom\functions\truncate');
         $this->registerFunction('json_format', 'PhpBench\Tabular\Dom\functions\truncate');
+        $this->registerFunction('stdev', 'PhpBench\Tabular\Dom\functions\stdev');
+        $this->registerFunction('variance', 'PhpBench\Tabular\Dom\functions\variance');
+        $this->registerFunction('abs', 'PhpBench\Tabular\Dom\functions\abs');
     }
 }

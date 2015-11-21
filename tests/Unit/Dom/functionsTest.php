@@ -151,4 +151,24 @@ EOT
         $this->assertEquals(-100, functions\deviation(10, 0));
         $this->assertEquals(0, functions\deviation(0, 0));
     }
+
+    /**
+     * It should return the standard deviation
+     */
+    public function testStdev()
+    {
+        $this->assertEquals(1.4142, round(functions\stdev(array(1, 2, 3, 4, 5)), 4));
+        $this->assertEquals(17.2116, round(functions\stdev(array(13, 23, 12, 44, 55)), 4));
+        $this->assertEquals(0, round(functions\stdev(array(1)), 4));
+        $this->assertEquals(0, round(functions\stdev(array(1, 1, 1)), 4));
+    }
+
+    /**
+     * It should return the absolute value
+     */
+    public function testAbs()
+    {
+        $this->assertEquals(6, functions\abs(6));
+        $this->assertEquals(6, functions\abs(-6));
+    }
 }

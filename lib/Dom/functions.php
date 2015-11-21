@@ -148,6 +148,48 @@ function deviation($standardValue, $actualValue)
     return 100 / $standardValue * ($actualValue - $standardValue);
 }
 
+function abs($value)
+{
+    return \abs($value);
+}
+
+/**
+ * Return the standard deviation of a given population
+ *
+ * @param \DOMNodeList $nodeList
+ * @param boolean $sample
+ *
+ * @return float
+ */
+function stdev($values, $sample = false)
+{
+    $variance = variance($values, $sample);
+
+    return sqrt($variance);
+}
+
+/**
+ * Return the variance for a given population.
+ *
+ * @param array $values
+ * @param boolean $sample
+ *
+ * @return float
+ */
+function variance($values, $sample = false)
+{
+    $average = mean($values);
+    $values = getValues($values);
+    $sum = 0;
+    foreach ($values as $value) {
+        $diff = pow($value - $average, 2);
+        $sum += $diff;
+    }
+    $variance = $sum / (count($values) - ($sample ? 1 : 0));
+
+    return $variance;
+}
+
 /**
  * Convert a DOMNodeList into an array.
  */
