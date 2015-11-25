@@ -11,7 +11,7 @@
 
 namespace PhpBench\Tabular;
 
-use PhpBench\Tabular\Dom\Element;
+use PhpBench\Dom\Element;
 use PhpBench\Tabular\Dom\TableDom;
 
 class Sort
