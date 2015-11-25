@@ -12,9 +12,9 @@
 namespace PhpBench\Tabular;
 
 use PhpBench\Dom\Element;
+use PhpBench\Dom\XPath;
 use PhpBench\Tabular\Dom\TableDom;
 use PhpBench\Tabular\Dom\XPathResolver;
-use PhpBench\Dom\XPath;
 
 class TableBuilder
 {
