@@ -67,6 +67,38 @@ EOT
     }
 
     /**
+     * It should wrap any exception thrown by the formatter.
+     *
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Error encountered formatting cell "boo"
+     */
+    public function testWrapException()
+    {
+        $tableDom = $this->createTable(<<<EOT
+<?xml version="1.0"?>
+<table>
+    <row>
+        <cell class="foo" name="boo">bar</cell>
+    </row>
+</table>
+EOT
+        );
+
+        $this->formatter->setClassDefinition(
+            'foo',
+            array(
+                array('printf', array()),
+            )
+        );
+        $this->format->getDefaultOptions()->willReturn(array());
+        $this->format->format('bar', array())->willThrow(new \InvalidArgumentException('This is the original exception'));
+        $this->registry->get('printf')->willReturn($this->format->reveal());
+        $this->formatter->formatTable(
+            $tableDom
+        );
+    }
+
+    /**
      * It should throw an exception if there is an undefined class in the XML.
      *
      * @expectedException InvalidArgumentException

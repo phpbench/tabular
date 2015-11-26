@@ -11,6 +11,7 @@
 
 namespace PhpBench\Tabular\Tests\Unit;
 
+use PhpBench\Dom\Document;
 use PhpBench\Tabular\Definition;
 use PhpBench\Tabular\Definition\Loader;
 
@@ -181,6 +182,61 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'foo', 'col_foo', 'col_bar', 'col_boo', 'hello', 'hai',
         ), $definition->getColumnNames());
+    }
+
+    /**
+     * It should expand items from an expression when a source document is given.
+     */
+    public function testColumnNamesItems()
+    {
+        $dom = new Document();
+        $dom->load(__DIR__ . '/files/articles.xml');
+        $definition = $this->loader->load(array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        array(
+                            'name' => '{{ cell.item }}',
+                            'literal' => 'bar',
+                            'with_items' => array(
+                                'selector' => '//article',
+                                'value' => 'string(./@name)',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ), $dom);
+
+        $this->assertEquals(array(
+            'one', 'two', 'three',
+        ), $definition->getColumnNames());
+    }
+
+    /**
+     * It should throw an exception if no source document is given when evaluating an expression for items.
+     *
+     * @expectedException RuntimeException 
+     * @expectedExceptionMessage You must pass a source document
+     */
+    public function testItemExprNoSource()
+    {
+        $this->loader->load(array(
+            'rows' => array(
+                array(
+                    'cells' => array(
+                        array(
+                            'name' => '{{ cell.item }}',
+                            'literal' => 'bar',
+                            'with_items' => array(
+                                'selector' => '//article',
+                                'value' => 'string(./@name)',
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ));
     }
 
     /**

@@ -13,6 +13,7 @@ namespace PhpBench\Tabular\Definition;
 
 use JsonSchema\Validator;
 use PhpBench\Tabular\Definition;
+use PhpBench\Tabular\Dom\XPathResolver;
 use PhpBench\Tabular\PathUtil;
 use PhpBench\Tabular\TokenReplacer;
 
@@ -33,13 +34,19 @@ class Loader
     private $tokenReplacer;
 
     /**
+     * @var XPathResolver
+     */
+    private $xpathResolver;
+
+    /**
      * @param Validator $validator
      * @param TokenReplacer $tokenReplacer
      */
-    public function __construct(Validator $validator = null, TokenReplacer $tokenReplacer = null)
+    public function __construct(Validator $validator = null, TokenReplacer $tokenReplacer = null, XPathResolver $xpathResolver = null)
     {
         $this->validator = $validator ?: new Validator();
         $this->tokenReplacer = $tokenReplacer ?: new TokenReplacer();
+        $this->xpathResolver = $xpathResolver ?: new XPathResolver();
     }
 
     /**
@@ -52,13 +59,13 @@ class Loader
      *
      * @param mixed $definition
      */
-    public function load($definition)
+    public function load($definition, $sourceDom = null)
     {
         $definition = $this->normalizeDefinition($definition);
 
         $this->processDefinitionIncludes($definition);
         $this->validateDefinition($definition);
-        $this->processMetadata($definition);
+        $this->processMetadata($definition, $sourceDom);
 
         return $definition;
     }
@@ -98,17 +105,43 @@ class Loader
      *
      * @param Definition
      */
-    private function processMetadata(Definition $definition)
+    private function processMetadata(Definition $definition, $sourceDom = null)
     {
         $columns = array();
         $passes = array();
 
-        foreach ($definition['rows'] as $rowDefinition) {
-            foreach ($rowDefinition['cells'] as $cellDefinition) {
+        if ($sourceDom) {
+            $xpath = new \DOMXpath($sourceDom);
+            $this->xpathResolver->registerXPathFunctions($xpath);
+        }
+
+        foreach ($definition['rows'] as &$rowDefinition) {
+            foreach ($rowDefinition['cells'] as &$cellDefinition) {
                 $cellName = $cellDefinition['name'];
 
                 if (isset($cellDefinition['pass'])) {
                     $passes[] = $cellDefinition['pass'];
+                }
+
+                // if an expression is given to with_items then we need to query
+                // the source document to evaluate the item names.
+                if (isset($cellDefinition['with_items']['selector'])) {
+                    if (null === $sourceDom) {
+                        throw new \RuntimeException(
+                            'You must pass the source document to the loader in order to use `with_items_expr`'
+                        );
+                    }
+
+                    $itemsExpr = $cellDefinition['with_items'];
+                    $selector = $this->xpathResolver->replaceFunctions($itemsExpr['selector']);
+                    $nodes = $xpath->query($selector);
+                    $items = array();
+                    foreach ($nodes as $node) {
+                        // todo: Support keys ?
+                        $value = $xpath->evaluate($itemsExpr['value'], $node);
+                        $items[] = $value;
+                    }
+                    $cellDefinition['with_items'] = $items;
                 }
 
                 $cellItems = array(null);

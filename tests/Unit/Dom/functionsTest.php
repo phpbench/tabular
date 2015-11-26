@@ -151,4 +151,27 @@ EOT
         $this->assertEquals(-100, functions\deviation(10, 0));
         $this->assertEquals(0, functions\deviation(0, 0));
     }
+
+    public function testValues()
+    {
+        $dom = new \DOMDocument(1.0);
+        $dom->loadXml(<<<EOT
+<?xml version="1.0"?>
+<elements>
+    <element value="10" order="1" foo="baz"/>
+    <element value="10" order="1" foo="bar"/>
+    <element value="10" order="2" foo="bar"/>
+    <element value="20" />
+    <element value="10" order="2" foo="zag"/>
+</elements>
+EOT
+    );
+
+        $xpath = new \DOMXpath($dom);
+        $elements = $xpath->query('//element');
+
+        $result = functions\values($elements, 'foo');
+        $this->assertCount(5, $result);
+        $this->assertEquals(array('baz', 'bar', 'bar', null, 'zag'), $result);
+    }
 }

@@ -116,7 +116,5 @@ class XPathResolver
         $this->registerFunction('min', 'PhpBench\Tabular\Dom\functions\min');
         $this->registerFunction('max', 'PhpBench\Tabular\Dom\functions\max');
         $this->registerFunction('median', 'PhpBench\Tabular\Dom\functions\median');
-        $this->registerFunction('truncate', 'PhpBench\Tabular\Dom\functions\truncate');
-        $this->registerFunction('json_format', 'PhpBench\Tabular\Dom\functions\truncate');
     }
 }

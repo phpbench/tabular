@@ -41,8 +41,24 @@
                                     "type": "string"
                                 },
                                 "with_items": {
-                                    "type": "array",
-                                    "description": "Iterate the cell definition with the given values"
+                                    "oneOf": [
+                                        { "type": "array" },
+                                        {
+                                            "type": "object",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "selector": {
+                                                    "type": "string"
+                                                },
+                                                "key": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    ]
                                 }
                             },
                             "required": ["name"]

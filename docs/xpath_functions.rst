@@ -24,18 +24,24 @@ Example::
 
 Will return the average price.
 
-.. _xpathfuncmin:
+.. _xpathfuncdeviation:
 
-``min``
-~~~~~~~
+``deviation``
+~~~~~~~~~~~~~
 
-Return the minumum value of a set of (numerical) node values.
+Return the deviation as a percentage between two values
 
 Example::
 
-    min(//price)
+    deviation(10, 20)
 
-Will return the minimum price.
+Would return "100" because 20 is 100% more than 10.
+
+This can also be used effectively with ``average`` function::
+
+    deviation(average(//price), ./price)
+
+Will show the deviation of the price from the average value.
 
 .. _xpathfuncmax:
 
@@ -63,23 +69,17 @@ Example::
 
 Will return the median price.
 
-.. _xpathfuncdeviation:
+.. _xpathfuncmin:
 
-``deviation``
-~~~~~~~~~~~~~
+``min``
+~~~~~~~
 
-Return the deviation as a percentage between two values
+Return the minumum value of a set of (numerical) node values.
 
 Example::
 
-    deviation(10, 20)
+    min(//price)
 
-Would return "100" because 20 is 100% more than 10.
-
-This can also be used effectively with ``average`` function::
-
-    deviation(average(//price), ./price)
-
-Will show the deviation of the price from the average value.
+Will return the minimum price.
 
 .. _XPath 1.0 functions: https://developer.mozilla.org/en-US/docs/Web/XPath/Functions
