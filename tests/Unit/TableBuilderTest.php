@@ -249,6 +249,33 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
         ), $result);
     }
 
+    /**
+     * It should override parmeters with per-row expressions.
+     */
+    public function testOverrideParameterExprs()
+    {
+        $result = $this->rowBuilder->buildTable($this->document, $this->loadDefinition(array(
+            'rows' => array(
+                array(
+                    'param_exprs' => array(
+                        'foo' => 'string(./@name)',
+                    ),
+                    'cells' => array(
+                        array(
+                            'name' => 'subject',
+                            'class' => '{{ param.foo }}',
+                            'expr' => 'sum(./@time)',
+                        ),
+                    ),
+                    'with_query' => '//subject',
+                ),
+            ),
+        )));
+
+        $this->assertTrue($result->evaluate('count(//cell[@class="benchMethodSet"]) = 1'));
+        $this->assertTrue($result->evaluate('count(//cell[@class="benchPublicProperty"]) = 1'));
+    }
+
     private function assertTable($expected, TableDom $result)
     {
         $results = array();

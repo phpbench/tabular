@@ -9,6 +9,10 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
+                    "param_exprs": {
+                        "type": "object",
+                        "description": "Parameters for this row (values are XPath expressions)"
+                    },
                     "group": {
                         "type": "string"
                     },

@@ -116,7 +116,7 @@ class Expander
             unset($cellDefinition['with_items']);
 
             if (isset($cellDefinition['class'])) {
-                $cellDefinition['class'] = $this->tokenReplacer->replaceTokens($cellDefinition['class'], $rowItem, $cellItem, $parameters);
+                $cellDefinition['class'] = $this->tokenReplacer->replaceTokens($cellDefinition['class'], $rowItem, $cellItem, null);
             }
 
             if (isset($cellDefinition['expr'])) {

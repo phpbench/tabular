@@ -64,8 +64,17 @@ class TableBuilder
             }
 
             foreach ($sourceXpath->query($selector) as $sourceEl) {
+                $rowParameters = $parameters;
+
+                if (isset($rowDefinition['param_exprs'])) {
+                    foreach ($rowDefinition['param_exprs'] as $paramName => $paramExpr) {
+                        // TODO: We should prevent DOMNodeList instances being returned from evaluate..
+                        $rowParameters[$paramName] = $sourceXpath->evaluate($paramExpr, $sourceEl);
+                    }
+                }
+
                 if (isset($rowDefinition['group'])) {
-                    $group = $rowDefinition['group'];
+                    $group = $this->tokenReplacer->replaceTokens($rowDefinition['group'], null, null, $parameters);
                 } else {
                     $group = self::DEFAULT_GROUP;
                 }
@@ -96,7 +105,7 @@ class TableBuilder
                     $value = null;
 
                     if (isset($cellDefinition['class'])) {
-                        $class = $cellDefinition['class'];
+                        $class = $this->tokenReplacer->replaceTokens($cellDefinition['class'], null, null, $rowParameters);
                         if ($class) {
                             $cellEl->setAttribute('class', $class);
                         }
