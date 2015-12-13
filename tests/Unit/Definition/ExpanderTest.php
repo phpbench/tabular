@@ -192,6 +192,7 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
                     'cells' => array(
                         array(
                             'name' => '{{ cell.item }}',
+                            'class' => '{{ row.item }}-{{ cell.item }}',
                             'literal' => '{{ row.item }}-{{ cell.item }}',
                             'with_items' => array('alpha', 'beta'),
                         ),
@@ -216,8 +217,8 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
             'rows' => array(
                 array(
                     'cells' => array(
-                        array('name' => 'alpha', 'literal' => 'one-alpha'),
-                        array('name' => 'beta', 'literal' => 'one-beta'),
+                        array('name' => 'alpha', 'class' => 'one-alpha', 'literal' => 'one-alpha'),
+                        array('name' => 'beta', 'class' => 'one-beta', 'literal' => 'one-beta'),
                         array('name' => 'expr-alpha', 'expr' => 'sum(//foo/one/alpha'),
                         array('name' => 'expr-beta', 'expr' => 'sum(//foo/one/beta'),
                     ),
@@ -225,8 +226,8 @@ class ExpanderTest extends \PHPUnit_Framework_TestCase
                 ),
                 array(
                     'cells' => array(
-                        array('name' => 'alpha', 'literal' => 'two-alpha'),
-                        array('name' => 'beta', 'literal' => 'two-beta'),
+                        array('name' => 'alpha', 'class' => 'two-alpha', 'literal' => 'two-alpha'),
+                        array('name' => 'beta', 'class' => 'two-beta', 'literal' => 'two-beta'),
                         array('name' => 'expr-alpha', 'expr' => 'sum(//foo/two/alpha'),
                         array('name' => 'expr-beta', 'expr' => 'sum(//foo/two/beta'),
                     ),

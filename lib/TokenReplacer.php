@@ -13,7 +13,7 @@ namespace PhpBench\Tabular;
 
 class TokenReplacer
 {
-    public function replaceTokens($subject, $rowItem, $cellItem, array $parameters = array())
+    public function replaceTokens($subject, $rowItem, $cellItem, array $parameters = null)
     {
         preg_match_all('/{{\s*(.*?)\s*}}/', $subject, $matches);
 
@@ -49,6 +49,10 @@ class TokenReplacer
                 $value = $rowItem;
             } else {
                 $value = $cellItem;
+            }
+
+            if (null === $value) {
+                continue;
             }
 
             if (is_scalar($value)) {

@@ -506,7 +506,7 @@ then the default group will be used.
 Parameters
 ----------
 
-Parameters allow you both to define "global" variables in your definition and
+Parameters allow you both to define variables in your definition and
 provide a way for the end user to change these variables.
 
 
@@ -552,6 +552,32 @@ in the report as follows:
     //     string(30) "One Hundered Years of Soliture"
     //   }
     // }
+
+You can also set or override parameters via. an **expression** on a row-by-row
+basis using the ``param_exprs`` key:
+
+.. code-block:: javascript
+
+    {
+        "rows": [
+            {
+                "param_exprs": {
+                    "my_class": "string(./@class)"
+                },
+                "cells": [
+                    {
+                        "name": "value",
+                        "class": "{{ param.my_class }}",
+                        "expr": "string(./title)"
+                    }
+                ],
+                "with_query": "//book"
+            }
+        ]
+    }
+
+In the above example we assume the the ``<book/>`` element has an attribute
+``class`` which we then use as the class for the table element.
 
 Includes
 --------
