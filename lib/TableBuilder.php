@@ -64,15 +64,6 @@ class TableBuilder
             }
 
             foreach ($sourceXpath->query($selector) as $sourceEl) {
-                $rowParameters = $parameters;
-
-                if (isset($rowDefinition['param_exprs'])) {
-                    foreach ($rowDefinition['param_exprs'] as $paramName => $paramExpr) {
-                        // TODO: We should prevent DOMNodeList instances being returned from evaluate..
-                        $rowParameters[$paramName] = $sourceXpath->evaluate($paramExpr, $sourceEl);
-                    }
-                }
-
                 if (isset($rowDefinition['group'])) {
                     $group = $this->tokenReplacer->replaceTokens($rowDefinition['group'], null, null, $parameters);
                 } else {
@@ -89,6 +80,19 @@ class TableBuilder
                 }
 
                 $rowEl = $groupEl->appendElement('row');
+
+                $rowParameters = $parameters;
+
+                if (isset($rowDefinition['param_exprs'])) {
+                    foreach ($rowDefinition['param_exprs'] as $paramName => $paramExpr) {
+                        // TODO: We should prevent DOMNodeList instances being returned from evaluate..
+                        $paramValue = $sourceXpath->evaluate($paramExpr, $sourceEl);
+                        $rowParam = $rowEl->appendElement('param');
+                        $rowParam->setAttribute('name', $paramName);
+                        $rowParam->nodeValue = $paramValue;
+                        $rowParameters[$paramName] = $paramValue;
+                    }
+                }
 
                 foreach ($rowDefinition['cells'] as $cellDefinition) {
                     $columnName = $cellDefinition['name'];

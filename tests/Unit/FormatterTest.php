@@ -67,6 +67,38 @@ EOT
     }
 
     /**
+     * It should allow parameters to be used in the formatter.
+     */
+    public function testFormatTableReplaceParams()
+    {
+        $tableDom = $this->createTable(<<<EOT
+<?xml version="1.0"?>
+<table>
+    <row>
+        <param name="mode">throughput</param>
+        <cell class="foo" name="boo">bar</cell>
+    </row>
+</table>
+EOT
+        );
+
+        $this->formatter->setClassDefinition(
+            'foo',
+            array(
+                array('unit_formatter', array('mode' => '{{ param.mode }}')),
+            )
+        );
+        $this->format->getDefaultOptions()->willReturn(array('mode' => 'xx'));
+        $this->format->format('bar', array('mode' => 'throughput'))->willReturn('10 op/s');
+        $this->registry->get('unit_formatter')->willReturn($this->format->reveal());
+        $this->formatter->formatTable(
+            $tableDom
+        );
+
+        $this->assertContains('10 op/s', $tableDom->saveXml());
+    }
+
+    /**
      * It should wrap any exception thrown by the formatter.
      *
      * @expectedException RuntimeException

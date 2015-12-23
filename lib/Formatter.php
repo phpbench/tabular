@@ -20,10 +20,12 @@ class Formatter
 {
     private $registry;
     private $classDefinitions = array();
+    private $tokenReplacer;
 
-    public function __construct(RegistryInterface $registry = null)
+    public function __construct(RegistryInterface $registry = null, TokenReplacer $tokenReplacer = null)
     {
         $this->registry = $registry ?: new ArrayRegistry();
+        $this->tokenReplacer = $tokenReplacer ?: new TokenReplacer();
     }
 
     public function getRegistry()
@@ -77,6 +79,16 @@ class Formatter
             }
 
             $options = array_merge($defaultOptions, $options);
+
+            $params = array();
+
+            foreach ($cellEl->query('ancestor::row/param') as $paramEl) {
+                $params[$paramEl->getAttribute('name')] = $paramEl->nodeValue;
+            }
+
+            foreach ($options as &$optionValue) {
+                $optionValue = $this->tokenReplacer->replaceTokens($optionValue, null, null, $params);
+            }
 
             try {
                 $value = $formatter->format($value, $options);

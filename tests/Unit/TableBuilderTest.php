@@ -274,6 +274,8 @@ class TableBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($result->evaluate('count(//cell[@class="benchMethodSet"]) = 1'));
         $this->assertTrue($result->evaluate('count(//cell[@class="benchPublicProperty"]) = 1'));
+        $this->assertTrue($result->evaluate('count(//row/param[@name="foo"][contains(., "benchMethodSet")]) = 1'));
+        $this->assertTrue($result->evaluate('count(//row/param[@name="foo"][contains(., "benchPublicProperty")]) = 1'));
     }
 
     private function assertTable($expected, TableDom $result)
