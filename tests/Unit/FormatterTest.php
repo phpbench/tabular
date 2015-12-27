@@ -99,6 +99,39 @@ EOT
     }
 
     /**
+     * It should allow parameters to be used in nested options in the formatter.
+     */
+    public function testFormatTableReplaceParamsNested()
+    {
+        $tableDom = $this->createTable(<<<EOT
+<?xml version="1.0"?>
+<table>
+    <row>
+        <param name="one">one</param>
+        <param name="two">two</param>
+        <cell class="foo" name="boo">bar</cell>
+    </row>
+</table>
+EOT
+        );
+
+        $this->formatter->setClassDefinition(
+            'foo',
+            array(
+                array('formatter', array('include' => array('{{ param.one }}', '{{ param.two }}'))),
+            )
+        );
+        $this->format->getDefaultOptions()->willReturn(array('include' => array()));
+        $this->format->format('bar', array('include' => array('one', 'two')))->willReturn('10 op/s');
+        $this->registry->get('formatter')->willReturn($this->format->reveal());
+        $this->formatter->formatTable(
+            $tableDom
+        );
+
+        $this->assertContains('10 op/s', $tableDom->saveXml());
+    }
+
+    /**
      * It should wrap any exception thrown by the formatter.
      *
      * @expectedException RuntimeException
