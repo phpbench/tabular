@@ -86,9 +86,7 @@ class Formatter
                 $params[$paramEl->getAttribute('name')] = $paramEl->nodeValue;
             }
 
-            foreach ($options as &$optionValue) {
-                $optionValue = $this->tokenReplacer->replaceTokens($optionValue, null, null, $params);
-            }
+            $this->replaceOptionValues($options, $params);
 
             try {
                 $value = $formatter->format($value, $options);
@@ -107,5 +105,15 @@ class Formatter
     public function setClassDefinition($class, $formatterDefinitions)
     {
         $this->classDefinitions[$class] = $formatterDefinitions;
+    }
+
+    private function replaceOptionValues(&$options, $params)
+    {
+        foreach ($options as &$optionValue) {
+            if (is_array($optionValue)) {
+                return $this->replaceOptionValues($optionValue, $params);
+            }
+            $optionValue = $this->tokenReplacer->replaceTokens($optionValue, null, null, $params);
+        }
     }
 }
